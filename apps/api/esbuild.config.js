@@ -27,6 +27,11 @@ esbuild
     platform: "node",
     outdir: "dist",
     format: "esm",
+    alias: {
+      "@kaneo/permissions": "../../packages/permissions/src/index.ts",
+      "@kaneo/libs": "../../packages/libs/src/index.ts",
+      "@kaneo/email": "../../packages/email/src/index.tsx",
+    },
     plugins: [externalizePlugin],
   })
   .catch((e) => {
