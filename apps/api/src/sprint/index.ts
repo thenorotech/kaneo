@@ -1,4 +1,4 @@
-import { validator } from "@hono/standard-validator";
+import { sValidator as validator } from "@hono/standard-validator";
 import { Hono } from "hono";
 import { describeRoute } from "hono-openapi";
 import * as v from "valibot";
