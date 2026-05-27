@@ -51,6 +51,8 @@ import task from "./task";
 import taskRelation from "./task-relation";
 import telegramIntegration from "./telegram-integration";
 import timeEntry from "./time-entry";
+import macomCharterRouter from "./macom-charter";
+import sprintRouter from "./sprint";
 import {
   authenticateApiRequest,
   resolveAssetBearerOrCookie,
@@ -534,6 +536,8 @@ export function createApp() {
   const workflowRuleApi = api.route("/workflow-rule", workflowRule);
   const invitationApi = api.route("/invitation", invitation);
   const workspaceApi = api.route("/workspace", workspace);
+  const macomCharterApi = api.route("/macom-charter", macomCharterRouter);
+  const sprintApi = api.route("/sprint", sprintRouter);
 
   app.route(
     "/",
@@ -626,6 +630,8 @@ export function createApp() {
     workflowRuleApi,
     workspaceApi,
     oauthApi,
+    macomCharterApi,
+    sprintApi,
   };
 }
 
@@ -742,6 +748,8 @@ const {
   workflowRuleApi,
   workspaceApi,
   oauthApi,
+  macomCharterApi,
+  sprintApi,
 } = createdApp;
 
 const isMainModule =
@@ -777,6 +785,8 @@ export type AppType =
   | typeof workspaceApi
   | typeof publicProjectApi
   | typeof invitationPublicApi
-  | typeof oauthApi;
+  | typeof oauthApi
+  | typeof macomCharterApi
+  | typeof sprintApi;
 
 export default app;

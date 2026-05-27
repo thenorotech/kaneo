@@ -1,4 +1,4 @@
-import { CalendarDays, Check, Menu, Plus, SquareKanban } from "lucide-react";
+import { CalendarDays, Check, Menu, Plus, SquareKanban, FileText, Repeat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -12,7 +12,9 @@ import { cn } from "@/lib/cn";
 type MobileProjectNavProps = {
   workspaceId: string;
   projectId: string;
-  activeView: "backlog" | "board" | "gantt";
+  activeView: "backlog" | "board" | "gantt" | "charter" | "sprints";
+  onSelectCharter: () => void;
+  onSelectSprints: () => void;
   onSelectBoard: () => void;
   onSelectBacklog: () => void;
   onSelectGantt: () => void;
@@ -24,6 +26,8 @@ export default function MobileProjectNav({
   workspaceId,
   projectId,
   activeView,
+  onSelectCharter,
+  onSelectSprints,
   onSelectBoard,
   onSelectBacklog,
   onSelectGantt,
@@ -51,7 +55,33 @@ export default function MobileProjectNav({
             <p className="px-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
               View
             </p>
-            <div className="grid grid-cols-3 gap-1">
+            <div className="grid grid-cols-2 gap-1 sm:grid-cols-5">
+              <button
+                type="button"
+                onClick={onSelectCharter}
+                className={cn(
+                  "flex w-full items-center justify-center gap-1 whitespace-nowrap rounded-md border px-2 py-1.5 text-xs font-medium transition-colors",
+                  activeView === "charter"
+                    ? "border-border bg-secondary text-foreground"
+                    : "border-transparent text-muted-foreground hover:bg-accent",
+                )}
+              >
+                <FileText className="size-3.5" />
+                Charter
+              </button>
+              <button
+                type="button"
+                onClick={onSelectSprints}
+                className={cn(
+                  "flex w-full items-center justify-center gap-1 whitespace-nowrap rounded-md border px-2 py-1.5 text-xs font-medium transition-colors",
+                  activeView === "sprints"
+                    ? "border-border bg-secondary text-foreground"
+                    : "border-transparent text-muted-foreground hover:bg-accent",
+                )}
+              >
+                <Repeat className="size-3.5" />
+                Sprints
+              </button>
               <button
                 type="button"
                 onClick={onSelectBacklog}

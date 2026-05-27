@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "@tanstack/react-router";
-import { CalendarDays, SquareKanban, SquircleDashed } from "lucide-react";
+import { CalendarDays, SquareKanban, SquircleDashed, FileText, Repeat } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import MobileProjectNav from "@/components/common/header/mobile-project-nav";
 import ProjectCrumbSelect from "@/components/common/header/project-crumb-select";
@@ -26,7 +26,7 @@ type ProjectLayoutProps = {
   headerActions?: ReactNode;
   children: ReactNode;
   showViewSwitcher?: boolean;
-  activeView?: "backlog" | "board" | "gantt";
+  activeView?: "backlog" | "board" | "gantt" | "charter" | "sprints";
 };
 
 export default function ProjectLayout({
@@ -51,7 +51,11 @@ export default function ProjectLayout({
       ? "backlog"
       : location.pathname.includes("/gantt")
         ? "gantt"
-        : "board");
+        : location.pathname.includes("/charter")
+          ? "charter"
+          : location.pathname.includes("/sprints")
+            ? "sprints"
+            : "board");
 
   const handleNavigateToBacklog = () => {
     navigate({
@@ -74,6 +78,20 @@ export default function ProjectLayout({
     });
   };
 
+  const handleNavigateToCharter = () => {
+    navigate({
+      to: "/dashboard/workspace/$workspaceId/project/$projectId/charter",
+      params: { workspaceId, projectId },
+    });
+  };
+
+  const handleNavigateToSprints = () => {
+    navigate({
+      to: "/dashboard/workspace/$workspaceId/project/$projectId/sprints",
+      params: { workspaceId, projectId },
+    });
+  };
+
   const handleProjectSwitch = (nextProjectId: string) => {
     navigate({
       to:
@@ -81,7 +99,11 @@ export default function ProjectLayout({
           ? "/dashboard/workspace/$workspaceId/project/$projectId/backlog"
           : resolvedView === "gantt"
             ? "/dashboard/workspace/$workspaceId/project/$projectId/gantt"
-            : "/dashboard/workspace/$workspaceId/project/$projectId/board",
+            : resolvedView === "charter"
+              ? "/dashboard/workspace/$workspaceId/project/$projectId/charter"
+              : resolvedView === "sprints"
+                ? "/dashboard/workspace/$workspaceId/project/$projectId/sprints"
+                : "/dashboard/workspace/$workspaceId/project/$projectId/board",
       params: {
         workspaceId,
         projectId: nextProjectId,
@@ -132,6 +154,8 @@ export default function ProjectLayout({
                 workspaceId={workspaceId}
                 projectId={projectId}
                 activeView={resolvedView}
+                onSelectCharter={handleNavigateToCharter}
+                onSelectSprints={handleNavigateToSprints}
                 onSelectBacklog={handleNavigateToBacklog}
                 onSelectBoard={handleNavigateToBoard}
                 onSelectGantt={handleNavigateToGantt}
@@ -142,6 +166,30 @@ export default function ProjectLayout({
 
             {showViewSwitcher && (
               <div className="hidden h-8 items-center gap-0.5 rounded-lg border border-border/80 bg-background p-0.5 sm:inline-flex">
+                <Button
+                  variant={resolvedView === "charter" ? "secondary" : "ghost"}
+                  size="xs"
+                  onClick={handleNavigateToCharter}
+                  className={cn(
+                    "h-6 gap-1.5 rounded-md px-2 text-xs",
+                    resolvedView !== "charter" && "text-muted-foreground",
+                  )}
+                >
+                  <FileText className="size-3.5" />
+                  Charter
+                </Button>
+                <Button
+                  variant={resolvedView === "sprints" ? "secondary" : "ghost"}
+                  size="xs"
+                  onClick={handleNavigateToSprints}
+                  className={cn(
+                    "h-6 gap-1.5 rounded-md px-2 text-xs",
+                    resolvedView !== "sprints" && "text-muted-foreground",
+                  )}
+                >
+                  <Repeat className="size-3.5" />
+                  Sprints
+                </Button>
                 <Button
                   variant={resolvedView === "backlog" ? "secondary" : "ghost"}
                   size="xs"
