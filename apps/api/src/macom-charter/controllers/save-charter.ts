@@ -1,35 +1,73 @@
 import { eq } from "drizzle-orm";
 import db from "../../database";
-import { projectCharterTable, charterEventTable, charterVersionTable } from "../../database/schema";
+import {
+  charterEventTable,
+  charterVersionTable,
+  projectCharterTable,
+} from "../../database/schema";
 
-export async function saveCharter(projectId: string, userId: string, data: any) {
+export async function saveCharter(
+  projectId: string,
+  userId: string,
+  data: Record<string, unknown>,
+) {
   return db.transaction(async (tx) => {
     // 1. Check existing
     const existing = await tx.query.projectCharterTable.findFirst({
       where: eq(projectCharterTable.projectId, projectId),
     });
-    
-    let charterId;
-    let finalData;
+
+    let charterId: string | undefined;
+    let finalData: Record<string, unknown>;
 
     // Filter data to only valid columns
-    const { 
-      projectName, projectType, responsibleArea, projectManager,
-      objective, highLevelDescription, scope, keyDeliverables,
-      highLevelRequirements, assumptionsRestrictions, overallRisk,
-      successCriteria, kpis, trackingControlMechanism, necessaryResources,
-      preliminaryBudget, criticalFactors, keyCollaborators,
-      preliminarySchedule, communicationPlan, relatedProjects,
-      elaborationDate
+    const {
+      projectName,
+      projectType,
+      responsibleArea,
+      projectManager,
+      objective,
+      highLevelDescription,
+      scope,
+      keyDeliverables,
+      highLevelRequirements,
+      assumptionsRestrictions,
+      overallRisk,
+      successCriteria,
+      kpis,
+      trackingControlMechanism,
+      necessaryResources,
+      preliminaryBudget,
+      criticalFactors,
+      keyCollaborators,
+      preliminarySchedule,
+      communicationPlan,
+      relatedProjects,
+      elaborationDate,
     } = data;
 
     const payload = {
-      projectName, projectType, responsibleArea, projectManager,
-      objective, highLevelDescription, scope, keyDeliverables,
-      highLevelRequirements, assumptionsRestrictions, overallRisk,
-      successCriteria, kpis, trackingControlMechanism, necessaryResources,
-      preliminaryBudget, criticalFactors, keyCollaborators,
-      preliminarySchedule, communicationPlan, relatedProjects,
+      projectName,
+      projectType,
+      responsibleArea,
+      projectManager,
+      objective,
+      highLevelDescription,
+      scope,
+      keyDeliverables,
+      highLevelRequirements,
+      assumptionsRestrictions,
+      overallRisk,
+      successCriteria,
+      kpis,
+      trackingControlMechanism,
+      necessaryResources,
+      preliminaryBudget,
+      criticalFactors,
+      keyCollaborators,
+      preliminarySchedule,
+      communicationPlan,
+      relatedProjects,
       elaborationDate: elaborationDate ? new Date(elaborationDate) : undefined,
     };
 

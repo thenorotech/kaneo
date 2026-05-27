@@ -6,7 +6,7 @@ export type GetEventsRequest = InferRequestType<
 >["param"];
 
 export async function getCharterEvents({ projectId }: GetEventsRequest) {
-  const response = await client["macom-charter"][":projectId"]["events"].$get({
+  const response = await client["macom-charter"][":projectId"].events.$get({
     param: { projectId },
   });
 

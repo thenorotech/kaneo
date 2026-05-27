@@ -2,13 +2,16 @@ import { eq } from "drizzle-orm";
 import db from "../../database";
 import { sprintTable } from "../../database/schema";
 
-export async function updateSprint(id: string, data: {
-  name?: string;
-  goal?: string;
-  status?: "planned" | "active" | "completed";
-  startDate?: string;
-  endDate?: string;
-}) {
+export async function updateSprint(
+  id: string,
+  data: {
+    name?: string;
+    goal?: string;
+    status?: "planned" | "active" | "completed";
+    startDate?: string;
+    endDate?: string;
+  },
+) {
   const [sprint] = await db
     .update(sprintTable)
     .set({

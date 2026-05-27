@@ -1,4 +1,12 @@
-import { CalendarDays, Check, Menu, Plus, SquareKanban, FileText, Repeat } from "lucide-react";
+import {
+  CalendarDays,
+  Check,
+  FileText,
+  Menu,
+  Plus,
+  Repeat,
+  SquareKanban,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,

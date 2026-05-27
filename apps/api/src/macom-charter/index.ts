@@ -1,18 +1,17 @@
+import { validator } from "@hono/standard-validator";
 import { Hono } from "hono";
 import { describeRoute } from "hono-openapi";
-import { authenticateApiRequest } from "../auth";
-import workspaceAccess from "../utils/workspace-access-middleware";
 import * as v from "valibot";
-import { validator } from "@hono/standard-validator";
-
+import { authenticateApiRequest } from "../utils/authenticate-api-request";
+import { workspaceAccess } from "../utils/workspace-access-middleware";
+import { approveCharter } from "./controllers/approve-charter";
+import { autoCreate } from "./controllers/auto-create";
 import { getCharter } from "./controllers/get-charter";
+import { getEvents } from "./controllers/get-events";
+import { getVersions } from "./controllers/get-versions";
+import { returnCharter } from "./controllers/return-charter";
 import { saveCharter } from "./controllers/save-charter";
 import { submitCharter } from "./controllers/submit-charter";
-import { approveCharter } from "./controllers/approve-charter";
-import { returnCharter } from "./controllers/return-charter";
-import { getVersions } from "./controllers/get-versions";
-import { getEvents } from "./controllers/get-events";
-import { autoCreate } from "./controllers/auto-create";
 
 export const macomCharterRouter = new Hono<{
   Variables: {
@@ -99,7 +98,10 @@ macomCharterRouter.post(
     description: "Approve project charter (PM or Leader)",
   }),
   validator("param", v.object({ projectId: v.string() })),
-  validator("json", v.object({ role: v.union([v.literal("pm"), v.literal("leader")]) })),
+  validator(
+    "json",
+    v.object({ role: v.union([v.literal("pm"), v.literal("leader")]) }),
+  ),
   async (c) => {
     const { projectId } = c.req.valid("param");
     const { role } = c.req.valid("json");

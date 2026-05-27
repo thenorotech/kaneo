@@ -3,12 +3,16 @@ import type { InferRequestType } from "hono/client";
 
 export type ApproveCharterRequest = InferRequestType<
   (typeof client)["macom-charter"][":projectId"]["approve"]["$post"]
->["param"] & InferRequestType<
-  (typeof client)["macom-charter"][":projectId"]["approve"]["$post"]
->["json"];
+>["param"] &
+  InferRequestType<
+    (typeof client)["macom-charter"][":projectId"]["approve"]["$post"]
+  >["json"];
 
-export async function approveCharter({ projectId, role }: ApproveCharterRequest) {
-  const response = await client["macom-charter"][":projectId"]["approve"].$post({
+export async function approveCharter({
+  projectId,
+  role,
+}: ApproveCharterRequest) {
+  const response = await client["macom-charter"][":projectId"].approve.$post({
     param: { projectId },
     json: { role },
   });

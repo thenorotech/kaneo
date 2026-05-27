@@ -34,6 +34,7 @@ import githubIntegration, {
 import getInstanceStatus from "./instance/controllers/get-instance-status";
 import invitation from "./invitation";
 import label from "./label";
+import macomCharterRouter from "./macom-charter";
 import mcpRoutes, { mcpWellKnownRoutes } from "./mcp";
 import { migrateColumns } from "./migrations/column-migration";
 import notification from "./notification";
@@ -46,13 +47,12 @@ import { getPublicProject } from "./project/controllers/get-public-project";
 import { initializeScheduler, shutdownScheduler } from "./scheduler";
 import search from "./search";
 import slackIntegration from "./slack-integration";
+import sprintRouter from "./sprint";
 import { getPrivateObject } from "./storage/s3";
 import task from "./task";
 import taskRelation from "./task-relation";
 import telegramIntegration from "./telegram-integration";
 import timeEntry from "./time-entry";
-import macomCharterRouter from "./macom-charter";
-import sprintRouter from "./sprint";
 import {
   authenticateApiRequest,
   resolveAssetBearerOrCookie,

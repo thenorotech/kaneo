@@ -1,5 +1,11 @@
 import { useLocation, useNavigate } from "@tanstack/react-router";
-import { CalendarDays, SquareKanban, SquircleDashed, FileText, Repeat } from "lucide-react";
+import {
+  CalendarDays,
+  FileText,
+  Repeat,
+  SquareKanban,
+  SquircleDashed,
+} from "lucide-react";
 import { type ReactNode, useState } from "react";
 import MobileProjectNav from "@/components/common/header/mobile-project-nav";
 import ProjectCrumbSelect from "@/components/common/header/project-crumb-select";

@@ -2,7 +2,7 @@ services:
   kaneo:
     build:
       context: .
-      dockerfile: Dockerfile.kaneo
+      dockerfile: Dockerfile
     ports:
       - "5173:5173"
     env_file:

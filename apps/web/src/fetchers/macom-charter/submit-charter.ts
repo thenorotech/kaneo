@@ -6,7 +6,7 @@ export type SubmitCharterRequest = InferRequestType<
 >["param"];
 
 export async function submitCharter({ projectId }: SubmitCharterRequest) {
-  const response = await client["macom-charter"][":projectId"]["submit"].$post({
+  const response = await client["macom-charter"][":projectId"].submit.$post({
     param: { projectId },
   });
 

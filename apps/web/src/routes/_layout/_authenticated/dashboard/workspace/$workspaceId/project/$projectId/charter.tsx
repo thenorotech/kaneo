@@ -1,14 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
+import CharterApprovalWorkflow from "@/components/charter/charter-approval-workflow";
+import CharterEditor from "@/components/charter/charter-editor";
+import CharterStatusBadge from "@/components/charter/charter-status-badge";
 import ProjectLayout from "@/components/common/project-layout";
 import PageTitle from "@/components/page-title";
-import useProjectStore from "@/store/project";
-import { useGetTasks } from "@/hooks/queries/task/use-get-tasks";
-import { useEffect } from "react";
-import CharterEditor from "@/components/charter/charter-editor";
-import CharterApprovalWorkflow from "@/components/charter/charter-approval-workflow";
-import CharterStatusBadge from "@/components/charter/charter-status-badge";
 import { useCharter } from "@/hooks/queries/macom-charter/use-charter";
+import { useGetTasks } from "@/hooks/queries/task/use-get-tasks";
+import useProjectStore from "@/store/project";
 
 export const Route = createFileRoute(
   "/_layout/_authenticated/dashboard/workspace/$workspaceId/project/$projectId/charter",
@@ -17,7 +16,6 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
-  const { t } = useTranslation();
   const { projectId, workspaceId } = Route.useParams();
   const { project, setProject } = useProjectStore();
   const { data } = useGetTasks(projectId);
@@ -35,10 +33,7 @@ function RouteComponent() {
       workspaceId={workspaceId}
       activeView="charter"
     >
-      <PageTitle
-        title={`${project?.name} — Charter`}
-        hideAppName
-      />
+      <PageTitle title={`${project?.name} — Charter`} hideAppName />
       <div className="relative flex flex-col h-full min-h-0 overflow-hidden bg-background">
         <div className="flex-1 overflow-auto p-6">
           <div className="mx-auto max-w-5xl space-y-6">
@@ -49,9 +44,11 @@ function RouteComponent() {
                   Draft, review, and approve the project charter.
                 </p>
               </div>
-              {charterData?.charterStatus && <CharterStatusBadge status={charterData.charterStatus} />}
+              {charterData?.charterStatus && (
+                <CharterStatusBadge status={charterData.charterStatus} />
+              )}
             </div>
-            
+
             <CharterApprovalWorkflow projectId={projectId} />
             <CharterEditor projectId={projectId} />
           </div>

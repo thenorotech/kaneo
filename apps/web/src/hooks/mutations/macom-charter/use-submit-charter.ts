@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { submitCharter } from "../../../fetchers/macom-charter/submit-charter";
 import { getCharterQueryKey } from "../../queries/macom-charter/use-charter";
-import { getProjectQueryKey } from "../../queries/project/use-project";
 
 export function useSubmitCharter() {
   const queryClient = useQueryClient();

@@ -1,6 +1,6 @@
 import { desc, eq } from "drizzle-orm";
 import db from "../../database";
-import { charterVersionTable, charterEventTable } from "../../database/schema";
+import { charterEventTable, charterVersionTable } from "../../database/schema";
 
 export async function getVersions(projectId: string) {
   const versions = await db.query.charterVersionTable.findMany({

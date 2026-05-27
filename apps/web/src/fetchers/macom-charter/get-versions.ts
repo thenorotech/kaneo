@@ -6,7 +6,7 @@ export type GetVersionsRequest = InferRequestType<
 >["param"];
 
 export async function getCharterVersions({ projectId }: GetVersionsRequest) {
-  const response = await client["macom-charter"][":projectId"]["versions"].$get({
+  const response = await client["macom-charter"][":projectId"].versions.$get({
     param: { projectId },
   });
 

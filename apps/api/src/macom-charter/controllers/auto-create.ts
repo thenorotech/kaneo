@@ -1,6 +1,11 @@
 import { eq, sql } from "drizzle-orm";
 import db from "../../database";
-import { projectTable, projectCharterTable, sprintTable, taskTable } from "../../database/schema";
+import {
+  projectCharterTable,
+  projectTable,
+  sprintTable,
+  taskTable,
+} from "../../database/schema";
 
 export async function autoCreate(projectId: string, userId: string) {
   return db.transaction(async (tx) => {
@@ -35,7 +40,7 @@ export async function autoCreate(projectId: string, userId: string) {
       .select({ max: sql<number>`max(${taskTable.number})` })
       .from(taskTable)
       .where(eq(taskTable.projectId, projectId));
-    
+
     let nextTaskNumber = (maxNumberResult[0]?.max || 0) + 1;
 
     for (const item of schedule) {
@@ -51,7 +56,7 @@ export async function autoCreate(projectId: string, userId: string) {
           status: "planned",
         })
         .returning();
-      
+
       createdSprints.push(sprint);
 
       // 2. Create Task linked to sprint

@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import db from "../../database";
-import { projectTable, charterEventTable } from "../../database/schema";
+import { charterEventTable, projectTable } from "../../database/schema";
 
 export async function submitCharter(projectId: string, userId: string) {
   return db.transaction(async (tx) => {

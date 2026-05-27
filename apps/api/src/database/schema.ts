@@ -992,9 +992,12 @@ export const projectCharterTable = pgTable(
       onDelete: "set null",
     }),
     pmApprovedAt: timestamp("pm_approved_at", { mode: "date" }),
-    leaderApprovedBy: text("leader_approved_by").references(() => userTable.id, {
-      onDelete: "set null",
-    }),
+    leaderApprovedBy: text("leader_approved_by").references(
+      () => userTable.id,
+      {
+        onDelete: "set null",
+      },
+    ),
     leaderApprovedAt: timestamp("leader_approved_at", { mode: "date" }),
     // Timestamps
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),

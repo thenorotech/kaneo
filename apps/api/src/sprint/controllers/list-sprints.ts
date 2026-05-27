@@ -1,4 +1,4 @@
-import { eq, asc } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import db from "../../database";
 import { sprintTable } from "../../database/schema";
 

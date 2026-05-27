@@ -1,8 +1,16 @@
 import { eq } from "drizzle-orm";
 import db from "../../database";
-import { projectTable, projectCharterTable, charterEventTable } from "../../database/schema";
+import {
+  charterEventTable,
+  projectCharterTable,
+  projectTable,
+} from "../../database/schema";
 
-export async function returnCharter(projectId: string, userId: string, comment: string) {
+export async function returnCharter(
+  projectId: string,
+  userId: string,
+  comment: string,
+) {
   return db.transaction(async (tx) => {
     const project = await tx.query.projectTable.findFirst({
       where: eq(projectTable.id, projectId),

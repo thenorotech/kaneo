@@ -1,8 +1,16 @@
 import { eq } from "drizzle-orm";
 import db from "../../database";
-import { projectTable, projectCharterTable, charterEventTable } from "../../database/schema";
+import {
+  charterEventTable,
+  projectCharterTable,
+  projectTable,
+} from "../../database/schema";
 
-export async function approveCharter(projectId: string, userId: string, role: "pm" | "leader") {
+export async function approveCharter(
+  projectId: string,
+  userId: string,
+  role: "pm" | "leader",
+) {
   return db.transaction(async (tx) => {
     const project = await tx.query.projectTable.findFirst({
       where: eq(projectTable.id, projectId),
@@ -18,7 +26,7 @@ export async function approveCharter(projectId: string, userId: string, role: "p
 
     if (!charter) throw new Error("Charter not found");
 
-    const updateData: any = {};
+    const updateData: Record<string, string | Date | null> = {};
     if (role === "pm") {
       updateData.pmApprovedBy = userId;
       updateData.pmApprovedAt = new Date();

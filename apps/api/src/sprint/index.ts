@@ -1,14 +1,13 @@
+import { validator } from "@hono/standard-validator";
 import { Hono } from "hono";
 import { describeRoute } from "hono-openapi";
-import { authenticateApiRequest } from "../auth";
-import workspaceAccess from "../utils/workspace-access-middleware";
 import * as v from "valibot";
-import { validator } from "@hono/standard-validator";
-
-import { listSprints } from "./controllers/list-sprints";
+import { authenticateApiRequest } from "../utils/authenticate-api-request";
+import { workspaceAccess } from "../utils/workspace-access-middleware";
 import { createSprint } from "./controllers/create-sprint";
-import { updateSprint } from "./controllers/update-sprint";
 import { deleteSprint } from "./controllers/delete-sprint";
+import { listSprints } from "./controllers/list-sprints";
+import { updateSprint } from "./controllers/update-sprint";
 
 export const sprintRouter = new Hono<{
   Variables: {
@@ -49,13 +48,16 @@ sprintRouter.post(
     operationId: "createSprint",
     tags: ["Sprint"],
   }),
-  validator("json", v.object({
-    projectId: v.string(),
-    name: v.string(),
-    goal: v.optional(v.string()),
-    startDate: v.optional(v.string()),
-    endDate: v.optional(v.string()),
-  })),
+  validator(
+    "json",
+    v.object({
+      projectId: v.string(),
+      name: v.string(),
+      goal: v.optional(v.string()),
+      startDate: v.optional(v.string()),
+      endDate: v.optional(v.string()),
+    }),
+  ),
   async (c) => {
     const body = c.req.valid("json");
     const data = await createSprint(body);
@@ -75,13 +77,22 @@ sprintRouter.patch(
     tags: ["Sprint"],
   }),
   validator("param", v.object({ id: v.string() })),
-  validator("json", v.object({
-    name: v.optional(v.string()),
-    goal: v.optional(v.string()),
-    status: v.optional(v.union([v.literal("planned"), v.literal("active"), v.literal("completed")])),
-    startDate: v.optional(v.string()),
-    endDate: v.optional(v.string()),
-  })),
+  validator(
+    "json",
+    v.object({
+      name: v.optional(v.string()),
+      goal: v.optional(v.string()),
+      status: v.optional(
+        v.union([
+          v.literal("planned"),
+          v.literal("active"),
+          v.literal("completed"),
+        ]),
+      ),
+      startDate: v.optional(v.string()),
+      endDate: v.optional(v.string()),
+    }),
+  ),
   async (c) => {
     const { id } = c.req.valid("param");
     const body = c.req.valid("json");

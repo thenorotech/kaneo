@@ -6,7 +6,7 @@ export type CreateSprintRequest = InferRequestType<
 >["json"];
 
 export async function createSprint(data: CreateSprintRequest) {
-  const response = await client["sprint"].$post({
+  const response = await client.sprint.$post({
     json: data,
   });
 

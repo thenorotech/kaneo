@@ -8,7 +8,7 @@ export type UpdateSprintRequest = InferRequestType<
 };
 
 export async function updateSprint({ id, data }: UpdateSprintRequest) {
-  const response = await client["sprint"][":id"].$patch({
+  const response = await client.sprint[":id"].$patch({
     param: { id },
     json: data,
   });

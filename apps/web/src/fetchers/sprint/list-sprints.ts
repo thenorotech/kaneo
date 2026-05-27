@@ -6,7 +6,7 @@ export type ListSprintsRequest = InferRequestType<
 >["query"];
 
 export async function listSprints({ projectId }: ListSprintsRequest) {
-  const response = await client["sprint"].$get({
+  const response = await client.sprint.$get({
     query: { projectId },
   });
 

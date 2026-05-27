@@ -6,7 +6,7 @@ export type DeleteSprintRequest = InferRequestType<
 >["param"];
 
 export async function deleteSprint({ id }: DeleteSprintRequest) {
-  const response = await client["sprint"][":id"].$delete({
+  const response = await client.sprint[":id"].$delete({
     param: { id },
   });
 

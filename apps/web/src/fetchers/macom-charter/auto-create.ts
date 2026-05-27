@@ -6,7 +6,9 @@ export type AutoCreateRequest = InferRequestType<
 >["param"];
 
 export async function autoCreateCharterTasks({ projectId }: AutoCreateRequest) {
-  const response = await client["macom-charter"][":projectId"]["auto-create"].$post({
+  const response = await client["macom-charter"][":projectId"][
+    "auto-create"
+  ].$post({
     param: { projectId },
   });
 
