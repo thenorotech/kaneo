@@ -1,30 +1,24 @@
-import fs from "node:fs";
 import esbuild from "esbuild";
 
-const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf8"));
-
-// Externalize all dependencies EXCEPT the local monorepo packages (which start with @kaneo/)
-const externalDependencies = Object.keys(packageJson.dependencies || {}).filter(
-  (dep) => !dep.startsWith("@kaneo/"),
-);
-
-const builtins = [
-  "fs",
-  "path",
-  "crypto",
-  "os",
-  "util",
-  "stream",
-  "buffer",
-  "events",
-  "url",
-  "querystring",
-  "http",
-  "https",
-  "net",
-  "tls",
-  "zlib",
-];
+// Plugin to externalize all bare imports (third-party packages and Node builtins)
+// EXCEPT for local monorepo packages starting with "@kaneo/"
+const externalizePlugin = {
+  name: "externalize-all-except-kaneo",
+  setup(build) {
+    build.onResolve({ filter: /.*/ }, (args) => {
+      // If it's a relative/absolute path or starts with @kaneo/, bundle it
+      if (
+        args.path.startsWith(".") ||
+        args.path.startsWith("/") ||
+        args.path.startsWith("@kaneo/")
+      ) {
+        return null; // continue resolving
+      }
+      // Otherwise, it's a bare import (like 'fs', 'ws', 'hono'), mark as external
+      return { path: args.path, external: true };
+    });
+  },
+};
 
 esbuild
   .build({
@@ -33,6 +27,9 @@ esbuild
     platform: "node",
     outdir: "dist",
     format: "esm",
-    external: [...externalDependencies, ...builtins],
+    plugins: [externalizePlugin],
   })
-  .catch(() => process.exit(1));
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
