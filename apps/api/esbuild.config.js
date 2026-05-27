@@ -1,10 +1,12 @@
 import fs from "node:fs";
 import esbuild from "esbuild";
 
-const _packageJson = JSON.parse(fs.readFileSync("./package.json", "utf8"));
+const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf8"));
 
-// Only externalize native/troublesome packages, bundle the rest (like @hono/*)
-const externalDependencies = ["bcrypt", "pg", "@modelcontextprotocol/sdk"];
+// Externalize all dependencies EXCEPT the local monorepo packages (which start with @kaneo/)
+const externalDependencies = Object.keys(packageJson.dependencies || {}).filter(
+  (dep) => !dep.startsWith("@kaneo/"),
+);
 
 const builtins = [
   "fs",
