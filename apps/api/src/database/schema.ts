@@ -248,6 +248,7 @@ export const projectTable = pgTable(
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
     isPublic: boolean("is_public").default(false),
     archivedAt: timestamp("archived_at", { mode: "date" }),
+    charterStatus: text("charter_status").notNull().default("pending_charter"),
   },
   (table) => [
     unique("project_workspace_id_id_unique").on(table.workspaceId, table.id),
@@ -313,6 +314,32 @@ export const workflowRuleTable = pgTable(
   ],
 );
 
+export const sprintTable = pgTable(
+  "sprint",
+  {
+    id: text("id")
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => projectTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    name: text("name").notNull(),
+    goal: text("goal"),
+    status: text("status").notNull().default("planned"),
+    startDate: timestamp("start_date", { mode: "date" }),
+    endDate: timestamp("end_date", { mode: "date" }),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [index("sprint_projectId_idx").on(table.projectId)],
+);
+
 export const taskTable = pgTable(
   "task",
   {
@@ -341,6 +368,10 @@ export const taskTable = pgTable(
     priority: text("priority").default("low"),
     startDate: timestamp("start_date", { mode: "date" }),
     dueDate: timestamp("due_date", { mode: "date" }),
+    sprintId: text("sprint_id").references(() => sprintTable.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { mode: "date" })
       .defaultNow()
@@ -914,6 +945,115 @@ export const deviceCodeTable = pgTable(
     uniqueIndex("device_code_device_code_uidx").on(table.deviceCode),
     uniqueIndex("device_code_user_code_uidx").on(table.userCode),
     index("device_code_user_id_idx").on(table.userId),
+  ],
+);
+
+// ─────────────────────────────────────────────────────────────
+// MACOM Charter tables
+// ─────────────────────────────────────────────────────────────
+
+export const projectCharterTable = pgTable(
+  "project_charter",
+  {
+    id: text("id")
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .unique()
+      .references(() => projectTable.id, { onDelete: "cascade" }),
+    // Project info
+    projectName: text("project_name"),
+    projectType: text("project_type"),
+    responsibleArea: text("responsible_area"),
+    projectManager: text("project_manager"),
+    elaborationDate: timestamp("elaboration_date", { mode: "date" }),
+    // Content
+    objective: text("objective"),
+    highLevelDescription: text("high_level_description"),
+    scope: text("scope"),
+    keyDeliverables: text("key_deliverables"),
+    highLevelRequirements: text("high_level_requirements"),
+    assumptionsRestrictions: text("assumptions_restrictions"),
+    overallRisk: text("overall_risk"),
+    successCriteria: text("success_criteria"),
+    kpis: text("kpis"),
+    trackingControlMechanism: text("tracking_control_mechanism"),
+    necessaryResources: text("necessary_resources"),
+    preliminaryBudget: text("preliminary_budget"),
+    criticalFactors: text("critical_factors"),
+    // JSONB fields
+    keyCollaborators: jsonb("key_collaborators"),
+    preliminarySchedule: jsonb("preliminary_schedule"),
+    communicationPlan: jsonb("communication_plan"),
+    relatedProjects: jsonb("related_projects"),
+    // Dual approval: PM + Leader must both approve to move to 'approved'
+    pmApprovedBy: text("pm_approved_by").references(() => userTable.id, {
+      onDelete: "set null",
+    }),
+    pmApprovedAt: timestamp("pm_approved_at", { mode: "date" }),
+    leaderApprovedBy: text("leader_approved_by").references(() => userTable.id, {
+      onDelete: "set null",
+    }),
+    leaderApprovedAt: timestamp("leader_approved_at", { mode: "date" }),
+    // Timestamps
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [index("project_charter_projectId_idx").on(table.projectId)],
+);
+
+export const charterEventTable = pgTable(
+  "charter_event",
+  {
+    id: text("id")
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => projectTable.id, { onDelete: "cascade" }),
+    actorUserId: text("actor_user_id").references(() => userTable.id, {
+      onDelete: "set null",
+    }),
+    // action: draft_saved | submitted_for_review | pm_approved | leader_approved
+    //         | returned_with_observations | approved
+    action: text("action").notNull(),
+    comment: text("comment"),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  },
+  (table) => [index("charter_event_projectId_idx").on(table.projectId)],
+);
+
+export const charterVersionTable = pgTable(
+  "charter_version",
+  {
+    id: text("id")
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => projectTable.id, { onDelete: "cascade" }),
+    charterId: text("charter_id")
+      .notNull()
+      .references(() => projectCharterTable.id, { onDelete: "cascade" }),
+    versionNumber: integer("version_number").notNull(),
+    snapshot: jsonb("snapshot").notNull(),
+    // reason: draft_saved | submitted_for_review | approved | returned_with_observations
+    reason: text("reason"),
+    createdBy: text("created_by").references(() => userTable.id, {
+      onDelete: "set null",
+    }),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  },
+  (table) => [
+    index("charter_version_projectId_idx").on(table.projectId),
+    unique("charter_version_project_number_unique").on(
+      table.projectId,
+      table.versionNumber,
+    ),
   ],
 );
 
