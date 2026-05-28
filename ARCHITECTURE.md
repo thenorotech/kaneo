@@ -44,26 +44,25 @@ El Charter es el documento fundacional de cualquier proyecto. Su ciclo de vida e
    * **Aprobación:** Si todo es correcto, se aprueba. Se estampan las firmas digitales (`pm_approved_by`, `leader_approved_by`) y las fechas exactas de aprobación.
    * **Retorno con Observaciones:** Si hay deficiencias, el revisor devuelve el documento a estado de edición adjuntando comentarios. El creador original debe corregir y volver a someter.
 
-### B. Transición a la Ejecución (Auto-creación)
+### B. Sprints como Hitos de Revisión (Review Checkpoints)
 
-Una vez que el Acta de Constitución es aprobada, el sistema permite **Auto-crear** la estructura de trabajo:
-* Basado en el cronograma preliminar (`preliminary_schedule`) definido en el Charter, el sistema genera automáticamente los **Sprints** (bloques de tiempo con metas específicas).
-* Genera las **Tareas (Tasks)** iniciales y las asigna a los Sprints correspondientes (`sprint_id`).
+A diferencia de las metodologías ágiles tradicionales donde el "Sprint" es un contenedor de tareas, en este sistema un Sprint representa un **Hito de Revisión o Reunión de Avance**.
+* **Características:** Tienen un nombre (ej. "Revisión Fase 1"), una fecha programada (`review_date`), notas o acuerdos de la reunión (`review_notes`) y un estado (`planned`, `completed`, `canceled`).
+* **Propósito:** Sirven para auditar el progreso del proyecto frente a los compromisos del Acta de Constitución, sin forzar a las tareas a pertenecer a un ciclo estricto.
 
-### C. Ejecución y Monitoreo (Sprints & Tasks)
+### C. Ejecución y Monitoreo (Tableros y Tareas)
 
-* **Sprints:** Organizan el trabajo en iteraciones. Cada Sprint tiene un estado (`planned`, `active`, `completed`), fechas de inicio/fin y una meta (`goal`).
-* **Tasks:** Las tareas viajan por tableros (Columns), tienen responsables (`assignee_id`) y se asocian a un Sprint.
+* **Tasks (Tareas):** Las tareas se gestionan de forma manual y viajan libremente por los tableros (Columns). Tienen responsables (`assignee_id`), fechas límite y prioridades. No están amarradas a un Sprint específico.
 * **Trazabilidad de Tiempo:** Los usuarios registran el tiempo invertido en las tareas mediante `time_entry`, permitiendo comparar el esfuerzo real contra el Presupuesto/Cronograma definido originalmente en el Charter.
 
 ---
 
 ## 3. Comportamiento Esperado del Usuario (User Journey)
 
-1. **Registro:** El usuario ingresa a la URL de producción y crea una cuenta nueva (la base de datos inicia vacía).
+1. **Registro:** El usuario ingresa a la URL de producción y crea una cuenta nueva.
 2. **Creación de Workspace:** El usuario crea un espacio de trabajo para su organización.
 3. **Inicio de Proyecto:** Se crea un nuevo proyecto, el cual nace automáticamente en estado `pending_charter`.
-4. **Planificación:** El usuario entra a la pestaña del Charter, llena toda la información ejecutiva y la somete a aprobación.
+4. **Planificación Ejecutiva:** El usuario entra a la pestaña del Charter, llena toda la información ejecutiva (presupuesto, riesgos, hitos) y la somete a aprobación.
 5. **Aprobación:** Otro miembro con permisos revisa y aprueba el documento.
-6. **Arranque:** Se dispara la creación automática de Sprints.
-7. **Operación Diaria:** El equipo mueve tarjetas de tareas, registra tiempos y se comunica a través de comentarios, todo alineado a los KPIs y objetivos del Charter aprobado.
+6. **Operación Diaria (Manual):** El equipo crea sus columnas y tarjetas de tareas manualmente, registrando tiempos y avances.
+7. **Revisiones (Sprints):** Periódicamente, el equipo programa "Sprints" (reuniones de revisión) para documentar el progreso general del proyecto frente a los directivos.

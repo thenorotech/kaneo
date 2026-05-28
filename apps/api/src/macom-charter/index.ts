@@ -5,7 +5,6 @@ import * as v from "valibot";
 import { authenticateApiRequest } from "../utils/authenticate-api-request";
 import { workspaceAccess } from "../utils/workspace-access-middleware";
 import { approveCharter } from "./controllers/approve-charter";
-import { autoCreate } from "./controllers/auto-create";
 import { getCharter } from "./controllers/get-charter";
 import { getEvents } from "./controllers/get-events";
 import { getVersions } from "./controllers/get-versions";
@@ -129,26 +128,6 @@ macomCharterRouter.post(
     const { comment } = c.req.valid("json");
     const userId = c.get("userId");
     const data = await returnCharter(projectId, userId, comment);
-    return c.json(data);
-  },
-);
-
-// ------------------------------------------------------------------
-// POST /:projectId/auto-create
-// ------------------------------------------------------------------
-macomCharterRouter.post(
-  "/:projectId/auto-create",
-  workspaceAccess.fromParam("projectId"),
-  describeRoute({
-    operationId: "autoCreateCharterTasks",
-    tags: ["MACOM Charter"],
-    description: "Auto-create sprints and tasks from preliminary schedule",
-  }),
-  validator("param", v.object({ projectId: v.string() })),
-  async (c) => {
-    const { projectId } = c.req.valid("param");
-    const userId = c.get("userId");
-    const data = await autoCreate(projectId, userId);
     return c.json(data);
   },
 );

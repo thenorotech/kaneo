@@ -232,6 +232,13 @@
 			"when": 1779915480953,
 			"tag": "0032_melted_nuke",
 			"breakpoints": true
+		},
+		{
+			"idx": 33,
+			"version": "7",
+			"when": 1779986224748,
+			"tag": "0033_mushy_energizer",
+			"breakpoints": true
 		}
 	]
 }
