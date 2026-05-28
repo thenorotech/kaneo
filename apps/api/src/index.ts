@@ -205,19 +205,6 @@ export function createApp() {
     return c.json({ status: "ok" });
   });
 
-  api.get("/db-debug", async (c) => {
-    const projects = await db.query.projectTable.findMany();
-    const workspaces = await db.query.workspaceTable.findMany();
-    const members = await db.query.workspaceUserTable.findMany();
-    const charters = await db.query.projectCharterTable.findMany();
-    return c.json({
-      projects,
-      workspaces,
-      members,
-      charters,
-    });
-  });
-
   api.get(
     "/instance/status",
     describeRoute({
@@ -528,11 +515,7 @@ export function createApp() {
 
   api.use("*", async (c, next) => {
     const path = c.req.path;
-    if (
-      path.startsWith("/api/mcp") ||
-      path.startsWith("/api/.well-known/") ||
-      path === "/api/db-debug"
-    ) {
+    if (path.startsWith("/api/mcp") || path.startsWith("/api/.well-known/")) {
       return next();
     }
     try {
