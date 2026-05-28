@@ -46,6 +46,52 @@ macomCharterRouter.get(
 // ------------------------------------------------------------------
 // POST /:projectId
 // ------------------------------------------------------------------
+const keyCollaboratorSchema = v.object({
+  name: v.string(),
+  role: v.string(),
+  responsibility: v.string(),
+});
+
+const scheduleItemSchema = v.object({
+  phase: v.string(),
+  description: v.string(),
+  startDate: v.string(),
+  endDate: v.string(),
+});
+
+const relatedProjectSchema = v.object({
+  code: v.string(),
+  name: v.string(),
+  department: v.string(),
+  link: v.string(),
+  contact: v.string(),
+});
+
+export const saveCharterBodySchema = v.object({
+  projectName: v.optional(v.nullable(v.string())),
+  projectType: v.optional(v.nullable(v.string())),
+  responsibleArea: v.optional(v.nullable(v.string())),
+  projectManager: v.optional(v.nullable(v.string())),
+  objective: v.optional(v.nullable(v.string())),
+  highLevelDescription: v.optional(v.nullable(v.string())),
+  scope: v.optional(v.nullable(v.string())),
+  keyDeliverables: v.optional(v.nullable(v.string())),
+  highLevelRequirements: v.optional(v.nullable(v.string())),
+  assumptionsRestrictions: v.optional(v.nullable(v.string())),
+  overallRisk: v.optional(v.nullable(v.string())),
+  successCriteria: v.optional(v.nullable(v.string())),
+  kpis: v.optional(v.nullable(v.string())),
+  trackingControlMechanism: v.optional(v.nullable(v.string())),
+  necessaryResources: v.optional(v.nullable(v.string())),
+  preliminaryBudget: v.optional(v.nullable(v.string())),
+  criticalFactors: v.optional(v.nullable(v.string())),
+  keyCollaborators: v.optional(v.nullable(v.array(keyCollaboratorSchema))),
+  preliminarySchedule: v.optional(v.nullable(v.array(scheduleItemSchema))),
+  communicationPlan: v.optional(v.nullable(v.array(v.string()))),
+  relatedProjects: v.optional(v.nullable(v.array(relatedProjectSchema))),
+  elaborationDate: v.optional(v.nullable(v.string())),
+});
+
 macomCharterRouter.post(
   "/:projectId",
   workspaceAccess.fromProject("projectId"),
@@ -55,10 +101,10 @@ macomCharterRouter.post(
     description: "Save or update project charter draft",
   }),
   validator("param", v.object({ projectId: v.string() })),
-  // We'll define the body schema in the controller or a shared schema file
+  validator("json", saveCharterBodySchema),
   async (c) => {
     const { projectId } = c.req.valid("param");
-    const body = await c.req.json();
+    const body = c.req.valid("json");
     const userId = c.get("userId");
     const data = await saveCharter(projectId, userId, body);
     return c.json(data);

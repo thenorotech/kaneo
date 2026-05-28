@@ -208,8 +208,7 @@ export default function CharterEditor({ projectId }: CharterEditorProps) {
   };
 
   const handleSaveDraft = () => {
-    // biome-ignore lint/suspicious/noExplicitAny: Drizzle payload expects record
-    saveCharter({ projectId, data: formData as any });
+    saveCharter({ projectId, json: formData });
   };
 
   const handleSubmit = () => {
