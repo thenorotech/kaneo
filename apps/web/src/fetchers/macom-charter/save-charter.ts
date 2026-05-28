@@ -1,4 +1,4 @@
-import type { client } from "@kaneo/libs";
+import { client } from "@kaneo/libs";
 import type { InferRequestType } from "hono/client";
 
 export type SaveCharterRequest = InferRequestType<
@@ -9,12 +9,11 @@ export type SaveCharterRequest = InferRequestType<
 
 export async function saveCharter({ projectId, data }: SaveCharterRequest) {
   // hono client might not know the exact body type if we didn't add a validator
-  // but we can pass it as any or stringified.
-  // Let's use fetch directly since we didn't add a validator to the POST route for body
-  const response = await fetch(`/api/macom-charter/${projectId}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+  // but we can pass it as any to send the json body dynamically.
+  // biome-ignore lint/suspicious/noExplicitAny: bypass TypeScript typings for POST without body validator
+  const response = await (client["macom-charter"][":projectId"] as any).$post({
+    param: { projectId },
+    json: data,
   });
 
   if (!response.ok) {
