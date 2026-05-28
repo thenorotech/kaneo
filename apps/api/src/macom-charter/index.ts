@@ -29,7 +29,7 @@ macomCharterRouter.use("*", authenticateApiRequest);
 // ------------------------------------------------------------------
 macomCharterRouter.get(
   "/:projectId",
-  workspaceAccess.fromParam("projectId"), // Note: we'll use a custom middleware or just let the controller handle project lookup
+  workspaceAccess.fromProject("projectId"), // Look up workspace ID from the project
   describeRoute({
     operationId: "getCharter",
     tags: ["MACOM Charter"],
@@ -48,7 +48,7 @@ macomCharterRouter.get(
 // ------------------------------------------------------------------
 macomCharterRouter.post(
   "/:projectId",
-  workspaceAccess.fromParam("projectId"),
+  workspaceAccess.fromProject("projectId"),
   describeRoute({
     operationId: "saveCharter",
     tags: ["MACOM Charter"],
@@ -70,7 +70,7 @@ macomCharterRouter.post(
 // ------------------------------------------------------------------
 macomCharterRouter.post(
   "/:projectId/submit",
-  workspaceAccess.fromParam("projectId"),
+  workspaceAccess.fromProject("projectId"),
   describeRoute({
     operationId: "submitCharter",
     tags: ["MACOM Charter"],
@@ -90,7 +90,7 @@ macomCharterRouter.post(
 // ------------------------------------------------------------------
 macomCharterRouter.post(
   "/:projectId/approve",
-  workspaceAccess.fromParam("projectId"),
+  workspaceAccess.fromProject("projectId"),
   describeRoute({
     operationId: "approveCharter",
     tags: ["MACOM Charter"],
@@ -115,7 +115,7 @@ macomCharterRouter.post(
 // ------------------------------------------------------------------
 macomCharterRouter.post(
   "/:projectId/return",
-  workspaceAccess.fromParam("projectId"),
+  workspaceAccess.fromProject("projectId"),
   describeRoute({
     operationId: "returnCharter",
     tags: ["MACOM Charter"],
@@ -137,7 +137,7 @@ macomCharterRouter.post(
 // ------------------------------------------------------------------
 macomCharterRouter.get(
   "/:projectId/versions",
-  workspaceAccess.fromParam("projectId"),
+  workspaceAccess.fromProject("projectId"),
   describeRoute({
     operationId: "getCharterVersions",
     tags: ["MACOM Charter"],
@@ -155,7 +155,7 @@ macomCharterRouter.get(
 // ------------------------------------------------------------------
 macomCharterRouter.get(
   "/:projectId/events",
-  workspaceAccess.fromParam("projectId"),
+  workspaceAccess.fromProject("projectId"),
   describeRoute({
     operationId: "getCharterEvents",
     tags: ["MACOM Charter"],
