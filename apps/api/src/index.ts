@@ -133,6 +133,25 @@ function buildContentDisposition(filename: string) {
 
 export function createApp() {
   const app = new Hono<AppVariables>();
+
+  app.onError((err, c) => {
+    console.error("Global App Error:", err);
+    if (err instanceof HTTPException) {
+      return err.getResponse();
+    }
+    // biome-ignore lint/suspicious/noExplicitAny: status property may exist on arbitrary error objects
+    const status = (err as any).status || (err as any).statusCode || 500;
+    const safeStatus =
+      typeof status === "number" && status >= 200 && status <= 599
+        ? status
+        : 500;
+    return c.json(
+      { error: err.message || "Internal Server Error" },
+      // biome-ignore lint/suspicious/noExplicitAny: bypass Hono literal union type check for status
+      safeStatus as any,
+    );
+  });
+
   const nodeWs = createNodeWebSocket({ app });
   const { upgradeWebSocket, injectWebSocket } = nodeWs;
   const corsOriginSource = [
@@ -163,6 +182,24 @@ export function createApp() {
   );
 
   const api = new Hono<ApiVariables>();
+
+  api.onError((err, c) => {
+    console.error("Global API Error:", err);
+    if (err instanceof HTTPException) {
+      return err.getResponse();
+    }
+    // biome-ignore lint/suspicious/noExplicitAny: status property may exist on arbitrary error objects
+    const status = (err as any).status || (err as any).statusCode || 500;
+    const safeStatus =
+      typeof status === "number" && status >= 200 && status <= 599
+        ? status
+        : 500;
+    return c.json(
+      { error: err.message || "Internal Server Error" },
+      // biome-ignore lint/suspicious/noExplicitAny: bypass Hono literal union type check for status
+      safeStatus as any,
+    );
+  });
 
   api.get("/health", (c) => {
     return c.json({ status: "ok" });

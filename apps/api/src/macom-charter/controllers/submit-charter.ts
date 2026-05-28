@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import { HTTPException } from "hono/http-exception";
 import db from "../../database";
 import { charterEventTable, projectTable } from "../../database/schema";
 
@@ -8,9 +9,12 @@ export async function submitCharter(projectId: string, userId: string) {
       where: eq(projectTable.id, projectId),
     });
 
-    if (!project) throw new Error("Project not found");
+    if (!project)
+      throw new HTTPException(404, { message: "Project not found" });
     if (project.charterStatus !== "pending_charter") {
-      throw new Error("Charter is already submitted or approved");
+      throw new HTTPException(400, {
+        message: "Charter is already submitted or approved",
+      });
     }
 
     await tx

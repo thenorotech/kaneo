@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import { HTTPException } from "hono/http-exception";
 import db from "../../database";
 import {
   charterEventTable,
@@ -17,7 +18,9 @@ export async function returnCharter(
     });
 
     if (!project || project.charterStatus !== "pending_approval") {
-      throw new Error("Project not in pending_approval status");
+      throw new HTTPException(400, {
+        message: "Project not in pending_approval status",
+      });
     }
 
     await tx

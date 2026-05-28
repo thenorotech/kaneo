@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import { HTTPException } from "hono/http-exception";
 import db from "../../database";
 import {
   charterEventTable,
@@ -17,14 +18,17 @@ export async function approveCharter(
     });
 
     if (!project || project.charterStatus !== "pending_approval") {
-      throw new Error("Project not in pending_approval status");
+      throw new HTTPException(400, {
+        message: "Project not in pending_approval status",
+      });
     }
 
     const charter = await tx.query.projectCharterTable.findFirst({
       where: eq(projectCharterTable.projectId, projectId),
     });
 
-    if (!charter) throw new Error("Charter not found");
+    if (!charter)
+      throw new HTTPException(404, { message: "Charter not found" });
 
     const updateData: Record<string, string | Date | null> = {};
     if (role === "pm") {
