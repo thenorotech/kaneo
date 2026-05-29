@@ -59,6 +59,7 @@ import {
 } from "./utils/authenticate-api-request";
 import { getInvitationDetails } from "./utils/check-registration-allowed";
 import { migrateApiKeyReferenceId } from "./utils/migrate-apikey-reference-id";
+import { migrateMacomCharterSchema } from "./utils/migrate-macom-charter-schema";
 import { migrateNotificationPreferencesSchema } from "./utils/migrate-notification-preferences-schema";
 import { migrateSessionColumn } from "./utils/migrate-session-column";
 import { migrateWorkspaceUserEmail } from "./utils/migrate-workspace-user-email";
@@ -704,6 +705,7 @@ export async function runStartupTasks() {
   // with Better Auth (reference_id + nullable user_id).
   await migrateApiKeyReferenceId();
 
+  await migrateMacomCharterSchema();
   await migrateNotificationPreferencesSchema();
   await migrateGitHubIntegration();
   await migrateColumns();

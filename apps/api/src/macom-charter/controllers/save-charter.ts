@@ -1,10 +1,32 @@
 import { eq } from "drizzle-orm";
+import { HTTPException } from "hono/http-exception";
 import db from "../../database";
 import {
   charterEventTable,
   charterVersionTable,
   projectCharterTable,
 } from "../../database/schema";
+
+export function normalizeCharterDate(value: unknown) {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (value === null || value === "") {
+    return null;
+  }
+
+  if (typeof value !== "string") {
+    throw new HTTPException(400, { message: "Invalid elaboration date" });
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    throw new HTTPException(400, { message: "Invalid elaboration date" });
+  }
+
+  return date;
+}
 
 export async function saveCharter(
   projectId: string,
@@ -68,7 +90,7 @@ export async function saveCharter(
       preliminarySchedule,
       communicationPlan,
       relatedProjects,
-      elaborationDate: elaborationDate ? new Date(elaborationDate) : undefined,
+      elaborationDate: normalizeCharterDate(elaborationDate),
     };
 
     if (existing) {
