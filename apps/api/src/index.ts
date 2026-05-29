@@ -170,7 +170,10 @@ export function createApp() {
     const safeStatus = status >= 200 && status <= 599 ? status : 500;
 
     return c.json(
-      { error: message },
+      { 
+        error: message,
+        stack: err.stack,
+      },
       // biome-ignore lint/suspicious/noExplicitAny: bypass Hono literal union type check for status
       safeStatus as any,
     );
