@@ -136,17 +136,40 @@ export function createApp() {
 
   app.onError((err, c) => {
     console.error("Global App Error:", err);
+
+    let status = 500;
+    const message = err.message || "Internal Server Error";
+
     if (err instanceof HTTPException) {
-      return err.getResponse();
+      const errStatus = err.status;
+      if (
+        typeof errStatus === "number" &&
+        errStatus >= 200 &&
+        errStatus <= 599
+      ) {
+        try {
+          return err.getResponse();
+        } catch (resError) {
+          console.error("Failed to getResponse from HTTPException:", resError);
+        }
+      }
+      status = typeof errStatus === "number" ? errStatus : 500;
+    } else {
+      // biome-ignore lint/suspicious/noExplicitAny: status property may exist on arbitrary error objects
+      const rawStatus = (err as any).status || (err as any).statusCode;
+      if (
+        typeof rawStatus === "number" &&
+        rawStatus >= 200 &&
+        rawStatus <= 599
+      ) {
+        status = rawStatus;
+      }
     }
-    // biome-ignore lint/suspicious/noExplicitAny: status property may exist on arbitrary error objects
-    const status = (err as any).status || (err as any).statusCode || 500;
-    const safeStatus =
-      typeof status === "number" && status >= 200 && status <= 599
-        ? status
-        : 500;
+
+    const safeStatus = status >= 200 && status <= 599 ? status : 500;
+
     return c.json(
-      { error: err.message || "Internal Server Error" },
+      { error: message },
       // biome-ignore lint/suspicious/noExplicitAny: bypass Hono literal union type check for status
       safeStatus as any,
     );
