@@ -2,7 +2,6 @@ import { sValidator as validator } from "@hono/standard-validator";
 import { Hono } from "hono";
 import { describeRoute } from "hono-openapi";
 import * as v from "valibot";
-import { authenticateApiRequest } from "../utils/authenticate-api-request";
 import { workspaceAccess } from "../utils/workspace-access-middleware";
 import { createSprint } from "./controllers/create-sprint";
 import { deleteSprint } from "./controllers/delete-sprint";
@@ -17,8 +16,6 @@ export const sprintRouter = new Hono<{
     workspaceRole: string;
   };
 }>();
-
-sprintRouter.use("*", authenticateApiRequest);
 
 // ------------------------------------------------------------------
 // GET /
@@ -53,9 +50,8 @@ sprintRouter.post(
     v.object({
       projectId: v.string(),
       name: v.string(),
-      goal: v.optional(v.string()),
-      startDate: v.optional(v.string()),
-      endDate: v.optional(v.string()),
+      reviewNotes: v.optional(v.string()),
+      reviewDate: v.optional(v.string()),
     }),
   ),
   async (c) => {
@@ -81,7 +77,7 @@ sprintRouter.patch(
     "json",
     v.object({
       name: v.optional(v.string()),
-      goal: v.optional(v.string()),
+      reviewNotes: v.optional(v.string()),
       status: v.optional(
         v.union([
           v.literal("planned"),
@@ -89,8 +85,7 @@ sprintRouter.patch(
           v.literal("completed"),
         ]),
       ),
-      startDate: v.optional(v.string()),
-      endDate: v.optional(v.string()),
+      reviewDate: v.optional(v.string()),
     }),
   ),
   async (c) => {

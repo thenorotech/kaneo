@@ -6,20 +6,18 @@ export async function updateSprint(
   id: string,
   data: {
     name?: string;
-    goal?: string;
+    reviewNotes?: string;
     status?: "planned" | "active" | "completed";
-    startDate?: string;
-    endDate?: string;
+    reviewDate?: string;
   },
 ) {
   const [sprint] = await db
     .update(sprintTable)
     .set({
       name: data.name,
-      goal: data.goal,
+      reviewNotes: data.reviewNotes,
       status: data.status,
-      startDate: data.startDate ? new Date(data.startDate) : undefined,
-      endDate: data.endDate ? new Date(data.endDate) : undefined,
+      reviewDate: data.reviewDate ? new Date(data.reviewDate) : undefined,
       updatedAt: new Date(),
     })
     .where(eq(sprintTable.id, id))

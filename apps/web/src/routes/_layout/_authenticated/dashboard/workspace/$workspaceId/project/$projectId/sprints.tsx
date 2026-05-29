@@ -51,7 +51,7 @@ function RouteComponent() {
                       {sprint.name}
                     </h3>
                     <p className="text-sm text-muted-foreground mb-4">
-                      {sprint.goal || "No goal specified"}
+                      {sprint.reviewNotes || "No review notes specified"}
                     </p>
                     <div className="text-xs font-medium bg-secondary inline-block px-2 py-1 rounded">
                       Status: {sprint.status}

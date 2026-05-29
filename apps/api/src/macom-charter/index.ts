@@ -2,7 +2,6 @@ import { sValidator as validator } from "@hono/standard-validator";
 import { Hono } from "hono";
 import { describeRoute } from "hono-openapi";
 import * as v from "valibot";
-import { authenticateApiRequest } from "../utils/authenticate-api-request";
 import { workspaceAccess } from "../utils/workspace-access-middleware";
 import { approveCharter } from "./controllers/approve-charter";
 import { getCharter } from "./controllers/get-charter";
@@ -20,9 +19,6 @@ export const macomCharterRouter = new Hono<{
     workspaceRole: string;
   };
 }>();
-
-// All charter routes require auth and project-level workspace access
-macomCharterRouter.use("*", authenticateApiRequest);
 
 // ------------------------------------------------------------------
 // GET /:projectId
