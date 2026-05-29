@@ -51,6 +51,7 @@ export async function migrateMacomCharterSchema() {
 
     await db.execute(sql`
       ALTER TABLE "project_charter"
+      ADD COLUMN IF NOT EXISTS "id" text,
       ADD COLUMN IF NOT EXISTS "project_id" text,
       ADD COLUMN IF NOT EXISTS "project_name" text,
       ADD COLUMN IF NOT EXISTS "project_type" text,
@@ -95,6 +96,7 @@ export async function migrateMacomCharterSchema() {
 
     await db.execute(sql`
       ALTER TABLE "charter_event"
+      ADD COLUMN IF NOT EXISTS "id" text,
       ADD COLUMN IF NOT EXISTS "project_id" text,
       ADD COLUMN IF NOT EXISTS "actor_user_id" text,
       ADD COLUMN IF NOT EXISTS "action" text,
@@ -117,6 +119,7 @@ export async function migrateMacomCharterSchema() {
 
     await db.execute(sql`
       ALTER TABLE "charter_version"
+      ADD COLUMN IF NOT EXISTS "id" text,
       ADD COLUMN IF NOT EXISTS "project_id" text,
       ADD COLUMN IF NOT EXISTS "charter_id" text,
       ADD COLUMN IF NOT EXISTS "version_number" integer,
@@ -148,6 +151,64 @@ export async function migrateMacomCharterSchema() {
     `);
 
     await db.execute(sql`
+      UPDATE "project_charter"
+      SET "id" = 'pc_' || md5(random()::text || clock_timestamp()::text)
+      WHERE "id" IS NULL;
+    `);
+    await db.execute(sql`
+      UPDATE "charter_event"
+      SET "id" = 'ce_' || md5(random()::text || clock_timestamp()::text)
+      WHERE "id" IS NULL;
+    `);
+    await db.execute(sql`
+      UPDATE "charter_version"
+      SET "id" = 'cv_' || md5(random()::text || clock_timestamp()::text)
+      WHERE "id" IS NULL;
+    `);
+
+    await db.execute(sql`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_constraint
+          WHERE conrelid = 'project_charter'::regclass
+          AND contype = 'p'
+        ) THEN
+          ALTER TABLE "project_charter"
+          ADD CONSTRAINT "project_charter_id_pk" PRIMARY KEY ("id");
+        END IF;
+      END $$;
+    `);
+
+    await db.execute(sql`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_constraint
+          WHERE conrelid = 'charter_event'::regclass
+          AND contype = 'p'
+        ) THEN
+          ALTER TABLE "charter_event"
+          ADD CONSTRAINT "charter_event_id_pk" PRIMARY KEY ("id");
+        END IF;
+      END $$;
+    `);
+
+    await db.execute(sql`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_constraint
+          WHERE conrelid = 'charter_version'::regclass
+          AND contype = 'p'
+        ) THEN
+          ALTER TABLE "charter_version"
+          ADD CONSTRAINT "charter_version_id_pk" PRIMARY KEY ("id");
+        END IF;
+      END $$;
+    `);
+
+    await db.execute(sql`
       DO $$
       BEGIN
         IF NOT EXISTS (
@@ -158,6 +219,36 @@ export async function migrateMacomCharterSchema() {
           ADD CONSTRAINT "project_charter_project_id_project_id_fk"
           FOREIGN KEY ("project_id") REFERENCES "public"."project"("id")
           ON DELETE cascade;
+        END IF;
+      END $$;
+    `);
+
+    await db.execute(sql`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_constraint
+          WHERE conname = 'project_charter_pm_approved_by_user_id_fk'
+        ) THEN
+          ALTER TABLE "project_charter"
+          ADD CONSTRAINT "project_charter_pm_approved_by_user_id_fk"
+          FOREIGN KEY ("pm_approved_by") REFERENCES "public"."user"("id")
+          ON DELETE set null;
+        END IF;
+      END $$;
+    `);
+
+    await db.execute(sql`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_constraint
+          WHERE conname = 'project_charter_leader_approved_by_user_id_fk'
+        ) THEN
+          ALTER TABLE "project_charter"
+          ADD CONSTRAINT "project_charter_leader_approved_by_user_id_fk"
+          FOREIGN KEY ("leader_approved_by") REFERENCES "public"."user"("id")
+          ON DELETE set null;
         END IF;
       END $$;
     `);
@@ -182,12 +273,57 @@ export async function migrateMacomCharterSchema() {
       BEGIN
         IF NOT EXISTS (
           SELECT 1 FROM pg_constraint
+          WHERE conname = 'charter_event_actor_user_id_user_id_fk'
+        ) THEN
+          ALTER TABLE "charter_event"
+          ADD CONSTRAINT "charter_event_actor_user_id_user_id_fk"
+          FOREIGN KEY ("actor_user_id") REFERENCES "public"."user"("id")
+          ON DELETE set null;
+        END IF;
+      END $$;
+    `);
+
+    await db.execute(sql`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_constraint
+          WHERE conname = 'charter_version_project_id_project_id_fk'
+        ) THEN
+          ALTER TABLE "charter_version"
+          ADD CONSTRAINT "charter_version_project_id_project_id_fk"
+          FOREIGN KEY ("project_id") REFERENCES "public"."project"("id")
+          ON DELETE cascade;
+        END IF;
+      END $$;
+    `);
+
+    await db.execute(sql`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_constraint
           WHERE conname = 'charter_version_charter_id_project_charter_id_fk'
         ) THEN
           ALTER TABLE "charter_version"
           ADD CONSTRAINT "charter_version_charter_id_project_charter_id_fk"
           FOREIGN KEY ("charter_id") REFERENCES "public"."project_charter"("id")
           ON DELETE cascade;
+        END IF;
+      END $$;
+    `);
+
+    await db.execute(sql`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_constraint
+          WHERE conname = 'charter_version_created_by_user_id_fk'
+        ) THEN
+          ALTER TABLE "charter_version"
+          ADD CONSTRAINT "charter_version_created_by_user_id_fk"
+          FOREIGN KEY ("created_by") REFERENCES "public"."user"("id")
+          ON DELETE set null;
         END IF;
       END $$;
     `);

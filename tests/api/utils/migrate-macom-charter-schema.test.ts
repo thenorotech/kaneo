@@ -31,9 +31,16 @@ describe("migrateMacomCharterSchema", () => {
 
     expect(sqlText).toContain('CREATE TABLE IF NOT EXISTS "project_charter"');
     expect(sqlText).toContain('ALTER TABLE "project_charter"');
+    expect(sqlText).toContain('ADD COLUMN IF NOT EXISTS "id" text');
     expect(sqlText).toContain('ADD COLUMN IF NOT EXISTS "elaboration_date"');
     expect(sqlText).toContain('CREATE TABLE IF NOT EXISTS "charter_event"');
     expect(sqlText).toContain('CREATE TABLE IF NOT EXISTS "charter_version"');
     expect(sqlText).toContain('ADD COLUMN IF NOT EXISTS "charter_status"');
+    expect(sqlText).toContain("project_charter_id_pk");
+    expect(sqlText).toContain("charter_event_id_pk");
+    expect(sqlText).toContain("charter_version_id_pk");
+    expect(sqlText).toContain("charter_event_actor_user_id_user_id_fk");
+    expect(sqlText).toContain("charter_version_project_id_project_id_fk");
+    expect(sqlText).toContain("charter_version_created_by_user_id_fk");
   });
 });
