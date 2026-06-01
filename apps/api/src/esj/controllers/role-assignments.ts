@@ -84,7 +84,9 @@ export async function removeRoleAssignment({
     .returning();
 
   if (!deleted) {
-    throw new HTTPException(404, { message: "Asignación de rol no encontrada." });
+    throw new HTTPException(404, {
+      message: "Asignación de rol no encontrada.",
+    });
   }
 
   return deleted;

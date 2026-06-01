@@ -11,7 +11,12 @@ function useGetEsjMetrics({
   onlyClosed?: string;
 }) {
   return useQuery({
-    queryKey: ["esj-metrics", workspaceId, designType ?? "all", onlyClosed ?? ""],
+    queryKey: [
+      "esj-metrics",
+      workspaceId,
+      designType ?? "all",
+      onlyClosed ?? "",
+    ],
     queryFn: () => getEsjMetrics({ workspaceId, designType, onlyClosed }),
     enabled: !!workspaceId,
   });

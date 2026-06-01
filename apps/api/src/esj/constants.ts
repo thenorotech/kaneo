@@ -59,8 +59,14 @@ export const ESJ_PHASE_STATUSES = [
 // tickets avanzan por estas etapas estándar de ingeniería de acero.
 export const ESJ_TICKET_STAGES = [
   { key: "planeacion-de-proyecto", label: "Planeación de proyecto" },
-  { key: "entrega-de-diseno-estructural", label: "Entrega de diseño estructural" },
-  { key: "aceptacion-asignacion-de-equipo", label: "Aceptación / asignación de equipo" },
+  {
+    key: "entrega-de-diseno-estructural",
+    label: "Entrega de diseño estructural",
+  },
+  {
+    key: "aceptacion-asignacion-de-equipo",
+    label: "Aceptación / asignación de equipo",
+  },
   { key: "modelado-de-conexiones", label: "Modelado de conexiones" },
   { key: "planos-de-fabricacion", label: "Planos de fabricación" },
   { key: "submittal", label: "Submittal" },

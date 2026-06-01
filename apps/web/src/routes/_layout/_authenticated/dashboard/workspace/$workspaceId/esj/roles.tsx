@@ -38,7 +38,8 @@ function RouteComponent() {
   const [roleKey, setRoleKey] = useState<string>(ESJ_ROLE_OPTIONS[0].key);
 
   const { data: members } = useGetActiveWorkspaceUsers(workspaceId);
-  const { data: assignments, isLoading } = useGetEsjRoleAssignments(workspaceId);
+  const { data: assignments, isLoading } =
+    useGetEsjRoleAssignments(workspaceId);
   const assignRole = useAssignEsjRole();
   const removeAssignment = useRemoveEsjRoleAssignment();
   const { canManageProjects } = useWorkspacePermission();
@@ -96,8 +97,8 @@ function RouteComponent() {
         <div className="space-y-6">
           <p className="text-sm text-muted-foreground">
             Asigna a cada persona su rol en el flujo de acero estructural. Al
-            crear un proyecto desde SAP, cada fase se asigna automáticamente a la
-            persona con el rol correspondiente y menor carga de trabajo.
+            crear un proyecto desde SAP, cada fase se asigna automáticamente a
+            la persona con el rol correspondiente y menor carga de trabajo.
           </p>
 
           {canManage && (
@@ -111,7 +112,9 @@ function RouteComponent() {
                   className="flex flex-wrap items-end gap-3"
                 >
                   <div className="flex flex-col gap-1">
-                    <span className="text-xs text-muted-foreground">Usuario</span>
+                    <span className="text-xs text-muted-foreground">
+                      Usuario
+                    </span>
                     <select
                       value={userId}
                       onChange={(e) => setUserId(e.target.value)}
@@ -121,7 +124,9 @@ function RouteComponent() {
                       <option value="">Selecciona…</option>
                       {(members ?? []).map((member) => (
                         <option key={member.userId} value={member.userId}>
-                          {member.user?.name ?? member.user?.email ?? member.userId}
+                          {member.user?.name ??
+                            member.user?.email ??
+                            member.userId}
                         </option>
                       ))}
                     </select>
@@ -157,22 +162,34 @@ function RouteComponent() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-foreground font-medium">Usuario</TableHead>
-                <TableHead className="text-foreground font-medium">Correo</TableHead>
-                <TableHead className="text-foreground font-medium">Rol</TableHead>
+                <TableHead className="text-foreground font-medium">
+                  Usuario
+                </TableHead>
+                <TableHead className="text-foreground font-medium">
+                  Correo
+                </TableHead>
+                <TableHead className="text-foreground font-medium">
+                  Rol
+                </TableHead>
                 <TableHead className="text-foreground font-medium" />
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="py-6 text-center text-sm text-muted-foreground">
+                  <TableCell
+                    colSpan={4}
+                    className="py-6 text-center text-sm text-muted-foreground"
+                  >
                     Cargando…
                   </TableCell>
                 </TableRow>
               ) : !assignments || assignments.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="py-6 text-center text-sm text-muted-foreground">
+                  <TableCell
+                    colSpan={4}
+                    className="py-6 text-center text-sm text-muted-foreground"
+                  >
                     Aún no hay roles asignados.
                   </TableCell>
                 </TableRow>

@@ -5,7 +5,10 @@ export type IntakeEsjProjectRequest = InferRequestType<
   (typeof client)["esj"]["intake"]["$post"]
 >["json"];
 
-async function intakeEsjProject({ workspaceId, email }: IntakeEsjProjectRequest) {
+async function intakeEsjProject({
+  workspaceId,
+  email,
+}: IntakeEsjProjectRequest) {
   const response = await client.esj.intake.$post({
     json: { workspaceId, email },
   });

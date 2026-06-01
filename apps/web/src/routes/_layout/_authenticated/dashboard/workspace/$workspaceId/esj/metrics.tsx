@@ -85,8 +85,8 @@ function RouteComponent() {
           <div className="space-y-6">
             <p className="text-sm text-muted-foreground">
               Basado en {data.projectCount} proyecto(s). Usa estas tasas para
-              estimar las horas (y el costo) de proyectos futuros según tonelaje y
-              tipo de diseño.
+              estimar las horas (y el costo) de proyectos futuros según tonelaje
+              y tipo de diseño.
             </p>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -118,11 +118,21 @@ function RouteComponent() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="text-foreground font-medium">Fase</TableHead>
-                    <TableHead className="text-foreground font-medium">Proyectos</TableHead>
-                    <TableHead className="text-foreground font-medium">Horas</TableHead>
-                    <TableHead className="text-foreground font-medium">Toneladas</TableHead>
-                    <TableHead className="text-foreground font-medium">h/ton</TableHead>
+                    <TableHead className="text-foreground font-medium">
+                      Fase
+                    </TableHead>
+                    <TableHead className="text-foreground font-medium">
+                      Proyectos
+                    </TableHead>
+                    <TableHead className="text-foreground font-medium">
+                      Horas
+                    </TableHead>
+                    <TableHead className="text-foreground font-medium">
+                      Toneladas
+                    </TableHead>
+                    <TableHead className="text-foreground font-medium">
+                      h/ton
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -132,8 +142,8 @@ function RouteComponent() {
                         colSpan={5}
                         className="py-6 text-center text-sm text-muted-foreground"
                       >
-                        Aún no hay tiempo registrado. Ficha horas en las tareas de
-                        cada fase para alimentar la métrica.
+                        Aún no hay tiempo registrado. Ficha horas en las tareas
+                        de cada fase para alimentar la métrica.
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -174,9 +184,13 @@ function RouteComponent() {
                   data.byDesignType.map((dt) => (
                     <Card key={dt.designType}>
                       <CardHeader className="flex-row items-center justify-between gap-2">
-                        <CardTitle className="text-sm">{dt.designType}</CardTitle>
+                        <CardTitle className="text-sm">
+                          {dt.designType}
+                        </CardTitle>
                         <span className="text-sm font-semibold tabular-nums">
-                          {dt.hoursPerTon != null ? `${dt.hoursPerTon} h/ton` : "—"}
+                          {dt.hoursPerTon != null
+                            ? `${dt.hoursPerTon} h/ton`
+                            : "—"}
                         </span>
                       </CardHeader>
                       <CardContent className="pt-0">

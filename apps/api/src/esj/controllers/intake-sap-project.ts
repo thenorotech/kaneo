@@ -219,7 +219,9 @@ async function intakeSapProject({
     };
   } catch (error) {
     const message =
-      error instanceof Error ? error.message : "Error desconocido en la ingesta";
+      error instanceof Error
+        ? error.message
+        : "Error desconocido en la ingesta";
     await db
       .update(esjSapIntakeTable)
       .set({ status: "failed", error: message })

@@ -264,7 +264,8 @@ const esj = new Hono<{
     describeRoute({
       operationId: "createEsjPhase",
       tags: ["ESJ"],
-      description: "Crea una fase (división de trabajo paralelo) en un proyecto.",
+      description:
+        "Crea una fase (división de trabajo paralelo) en un proyecto.",
       responses: {
         200: {
           description: "Fase creada",
@@ -346,7 +347,8 @@ const esj = new Hono<{
     describeRoute({
       operationId: "getEsjPhaseBoard",
       tags: ["ESJ"],
-      description: "Tablero de una fase: columnas del proyecto con sus tickets.",
+      description:
+        "Tablero de una fase: columnas del proyecto con sus tickets.",
       responses: {
         200: {
           description: "Tablero de la fase",

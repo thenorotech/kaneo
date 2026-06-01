@@ -108,7 +108,8 @@ async function getEsjProject(projectId: string) {
     totals: {
       tonnage,
       loggedHours: Number(totalHours.toFixed(2)),
-      hoursPerTon: tonnage > 0 ? Number((totalHours / tonnage).toFixed(4)) : null,
+      hoursPerTon:
+        tonnage > 0 ? Number((totalHours / tonnage).toFixed(4)) : null,
     },
   };
 }

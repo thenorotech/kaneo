@@ -101,7 +101,9 @@ function RouteComponent() {
       toast.success("Estado de la fase actualizado");
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "No se pudo actualizar la fase",
+        error instanceof Error
+          ? error.message
+          : "No se pudo actualizar la fase",
       );
     }
   };
@@ -217,14 +219,18 @@ function RouteComponent() {
             <CardHeader className="flex-row items-center justify-between gap-2">
               <CardTitle className="text-base">{esjProject.name}</CardTitle>
               <Badge variant="outline">
-                {ESJ_PROJECT_STATUS_LABELS[esjProject.status] ?? esjProject.status}
+                {ESJ_PROJECT_STATUS_LABELS[esjProject.status] ??
+                  esjProject.status}
               </Badge>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4 pt-0 sm:grid-cols-3 lg:grid-cols-4">
               <Field label="Código SAP" value={esjProject.sapCode} mono />
               <Field label="Cliente" value={esjProject.clientName} />
               <Field label="Solicitante" value={esjProject.requester ?? "—"} />
-              <Field label="Tipo de diseño" value={esjProject.designType ?? "—"} />
+              <Field
+                label="Tipo de diseño"
+                value={esjProject.designType ?? "—"}
+              />
               <Field
                 label="Fecha requerida"
                 value={
@@ -261,7 +267,10 @@ function RouteComponent() {
                 maximumFractionDigits: 2,
               })} t`}
             />
-            <Metric label="Horas registradas" value={`${totals.loggedHours} h`} />
+            <Metric
+              label="Horas registradas"
+              value={`${totals.loggedHours} h`}
+            />
             <Metric
               label="Horas / tonelada"
               value={totals.hoursPerTon != null ? `${totals.hoursPerTon}` : "—"}
@@ -292,12 +301,24 @@ function RouteComponent() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="text-foreground font-medium">#</TableHead>
-                  <TableHead className="text-foreground font-medium">Fase</TableHead>
-                  <TableHead className="text-foreground font-medium">Tickets</TableHead>
-                  <TableHead className="text-foreground font-medium">Horas</TableHead>
-                  <TableHead className="text-foreground font-medium">h/ton</TableHead>
-                  <TableHead className="text-foreground font-medium">Estado</TableHead>
+                  <TableHead className="text-foreground font-medium">
+                    #
+                  </TableHead>
+                  <TableHead className="text-foreground font-medium">
+                    Fase
+                  </TableHead>
+                  <TableHead className="text-foreground font-medium">
+                    Tickets
+                  </TableHead>
+                  <TableHead className="text-foreground font-medium">
+                    Horas
+                  </TableHead>
+                  <TableHead className="text-foreground font-medium">
+                    h/ton
+                  </TableHead>
+                  <TableHead className="text-foreground font-medium">
+                    Estado
+                  </TableHead>
                   <TableHead className="text-foreground font-medium text-right">
                     Acciones
                   </TableHead>
@@ -436,7 +457,11 @@ function RouteComponent() {
                   ) : (
                     <div className="flex flex-wrap gap-1.5">
                       {pieces.map((piece) => (
-                        <Badge key={piece.id} variant="secondary" className="font-mono">
+                        <Badge
+                          key={piece.id}
+                          variant="secondary"
+                          className="font-mono"
+                        >
                           {piece.code}
                         </Badge>
                       ))}

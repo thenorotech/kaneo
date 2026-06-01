@@ -126,17 +126,32 @@ function RouteComponent() {
   return (
     <>
       <PageTitle title="Proyectos ESJ" />
-      <WorkspaceLayout title="Proyectos ESJ (Acero estructural)" headerActions={headerActions}>
+      <WorkspaceLayout
+        title="Proyectos ESJ (Acero estructural)"
+        headerActions={headerActions}
+      >
         {isLoading ? (
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-foreground font-medium">Proyecto</TableHead>
-                <TableHead className="text-foreground font-medium">Código SAP</TableHead>
-                <TableHead className="text-foreground font-medium">Cliente</TableHead>
-                <TableHead className="text-foreground font-medium">Toneladas</TableHead>
-                <TableHead className="text-foreground font-medium">Requerido</TableHead>
-                <TableHead className="text-foreground font-medium">Estado</TableHead>
+                <TableHead className="text-foreground font-medium">
+                  Proyecto
+                </TableHead>
+                <TableHead className="text-foreground font-medium">
+                  Código SAP
+                </TableHead>
+                <TableHead className="text-foreground font-medium">
+                  Cliente
+                </TableHead>
+                <TableHead className="text-foreground font-medium">
+                  Toneladas
+                </TableHead>
+                <TableHead className="text-foreground font-medium">
+                  Requerido
+                </TableHead>
+                <TableHead className="text-foreground font-medium">
+                  Estado
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -159,13 +174,17 @@ function RouteComponent() {
               </EmptyMedia>
               <EmptyTitle>Sin proyectos ESJ todavía</EmptyTitle>
               <EmptyDescription>
-                Importa el correo automático de SAP para crear el primer proyecto
-                de acero estructural y empezar a medir tiempos por fase.
+                Importa el correo automático de SAP para crear el primer
+                proyecto de acero estructural y empezar a medir tiempos por
+                fase.
               </EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
               {canCreate && (
-                <Button onClick={() => setIsIntakeOpen(true)} className="gap-1.5">
+                <Button
+                  onClick={() => setIsIntakeOpen(true)}
+                  className="gap-1.5"
+                >
                   <Inbox className="w-4 h-4" />
                   Importar de SAP
                 </Button>
@@ -176,12 +195,24 @@ function RouteComponent() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-foreground font-medium">Proyecto</TableHead>
-                <TableHead className="text-foreground font-medium">Código SAP</TableHead>
-                <TableHead className="text-foreground font-medium">Cliente</TableHead>
-                <TableHead className="text-foreground font-medium">Toneladas</TableHead>
-                <TableHead className="text-foreground font-medium">Requerido</TableHead>
-                <TableHead className="text-foreground font-medium">Estado</TableHead>
+                <TableHead className="text-foreground font-medium">
+                  Proyecto
+                </TableHead>
+                <TableHead className="text-foreground font-medium">
+                  Código SAP
+                </TableHead>
+                <TableHead className="text-foreground font-medium">
+                  Cliente
+                </TableHead>
+                <TableHead className="text-foreground font-medium">
+                  Toneladas
+                </TableHead>
+                <TableHead className="text-foreground font-medium">
+                  Requerido
+                </TableHead>
+                <TableHead className="text-foreground font-medium">
+                  Estado
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -209,7 +240,9 @@ function RouteComponent() {
                   <TableCell className="py-3 font-mono text-xs text-muted-foreground">
                     {project.sapCode}
                   </TableCell>
-                  <TableCell className="py-3 text-sm">{project.clientName}</TableCell>
+                  <TableCell className="py-3 text-sm">
+                    {project.clientName}
+                  </TableCell>
                   <TableCell className="py-3 text-sm tabular-nums">
                     {Number(project.totalTonnage ?? 0).toLocaleString("es-MX", {
                       minimumFractionDigits: 2,
@@ -224,7 +257,8 @@ function RouteComponent() {
                   </TableCell>
                   <TableCell className="py-3">
                     <Badge variant={statusVariant(project.status)}>
-                      {ESJ_PROJECT_STATUS_LABELS[project.status] ?? project.status}
+                      {ESJ_PROJECT_STATUS_LABELS[project.status] ??
+                        project.status}
                     </Badge>
                   </TableCell>
                 </TableRow>

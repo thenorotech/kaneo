@@ -1004,7 +1004,10 @@ export const esjAreaTable = pgTable(
   (table) => [
     index("esj_area_projectId_idx").on(table.projectId),
     index("esj_area_esjProjectId_idx").on(table.esjProjectId),
-    unique("esj_area_esjProject_name_unique").on(table.esjProjectId, table.name),
+    unique("esj_area_esjProject_name_unique").on(
+      table.esjProjectId,
+      table.name,
+    ),
   ],
 );
 

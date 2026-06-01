@@ -36,24 +36,30 @@ export const ESJ_PHASE_STATUS_OPTIONS = [
   { key: "done", label: "Terminada" },
 ] as const;
 
-export const ESJ_PHASE_STATUS_LABELS: Record<string, string> = Object.fromEntries(
-  ESJ_PHASE_STATUS_OPTIONS.map((s) => [s.key, s.label]),
-);
+export const ESJ_PHASE_STATUS_LABELS: Record<string, string> =
+  Object.fromEntries(ESJ_PHASE_STATUS_OPTIONS.map((s) => [s.key, s.label]));
 
 // Etapas del ciclo de vida de un TICKET dentro de una fase. El tablero conserva
 // sus columnas de estado (To Do/In Progress/...); la etapa es un atributo del
 // ticket que indica en qué parte del flujo de ingeniería de acero va.
 export const ESJ_TICKET_STAGE_OPTIONS = [
   { key: "planeacion-de-proyecto", label: "Planeación de proyecto" },
-  { key: "entrega-de-diseno-estructural", label: "Entrega de diseño estructural" },
-  { key: "aceptacion-asignacion-de-equipo", label: "Aceptación / asignación de equipo" },
+  {
+    key: "entrega-de-diseno-estructural",
+    label: "Entrega de diseño estructural",
+  },
+  {
+    key: "aceptacion-asignacion-de-equipo",
+    label: "Aceptación / asignación de equipo",
+  },
   { key: "modelado-de-conexiones", label: "Modelado de conexiones" },
   { key: "planos-de-fabricacion", label: "Planos de fabricación" },
   { key: "submittal", label: "Submittal" },
   { key: "cierre-de-ingenieria", label: "Cierre de ingeniería" },
 ] as const;
 
-export type EsjTicketStageKey = (typeof ESJ_TICKET_STAGE_OPTIONS)[number]["key"];
+export type EsjTicketStageKey =
+  (typeof ESJ_TICKET_STAGE_OPTIONS)[number]["key"];
 
 export const ESJ_TICKET_STAGE_LABELS: Record<string, string> =
   Object.fromEntries(ESJ_TICKET_STAGE_OPTIONS.map((s) => [s.key, s.label]));

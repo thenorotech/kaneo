@@ -117,7 +117,10 @@ async function getQuoteMetrics({
   }
 
   const sumTonnage = (ids: Set<string>) =>
-    Array.from(ids).reduce((acc, id) => acc + (tonnageByProject.get(id) ?? 0), 0);
+    Array.from(ids).reduce(
+      (acc, id) => acc + (tonnageByProject.get(id) ?? 0),
+      0,
+    );
 
   const phaseMetrics = Array.from(byPhase.entries()).map(([slug, bucket]) => {
     const hours = bucket.seconds / 3600;
@@ -173,7 +176,10 @@ async function getQuoteMetrics({
 
   return {
     workspaceId,
-    filters: { designType: designType ?? null, onlyClosed: Boolean(onlyClosed) },
+    filters: {
+      designType: designType ?? null,
+      onlyClosed: Boolean(onlyClosed),
+    },
     projectCount: projects.length,
     totals: {
       hours: round(totalHours, 2),

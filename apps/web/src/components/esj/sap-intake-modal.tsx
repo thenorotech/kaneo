@@ -61,7 +61,8 @@ function SapIntakeModal({ open, onClose, workspaceId }: SapIntakeModalProps) {
           <DialogTitle>Importar proyecto desde SAP</DialogTitle>
           <DialogDescription>
             Pega el correo automático de SAP (acción zsd_email_cotizacion). En
-            producción esto lo dispara el BAPI de SAP contra este mismo endpoint.
+            producción esto lo dispara el BAPI de SAP contra este mismo
+            endpoint.
           </DialogDescription>
         </DialogHeader>
 

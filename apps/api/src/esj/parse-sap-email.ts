@@ -44,7 +44,10 @@ function buildFieldMap(raw: string): Map<string, string> {
   return map;
 }
 
-function pick(map: Map<string, string>, ...labels: string[]): string | undefined {
+function pick(
+  map: Map<string, string>,
+  ...labels: string[]
+): string | undefined {
   for (const label of labels) {
     const value = map.get(normalizeLabel(label));
     if (value !== undefined && value !== "") return value;
@@ -91,8 +94,13 @@ export function parseSapEmail(raw: string): ParsedSapProject {
   }
 
   const name =
-    pick(map, "Nombre Proyecto", "Nombre del Proyecto", "Proyecto", "Project") ??
-    sapCode;
+    pick(
+      map,
+      "Nombre Proyecto",
+      "Nombre del Proyecto",
+      "Proyecto",
+      "Project",
+    ) ?? sapCode;
   const clientName =
     pick(map, "Cliente", "Client", "Customer") ?? "Sin cliente";
   const priorityRaw = pick(map, "Prioridad", "Priority");

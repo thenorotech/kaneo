@@ -148,11 +148,7 @@ function RouteComponent() {
     <>
       {backAction}
       {canManage && (
-        <Button
-          size="xs"
-          className="gap-1"
-          onClick={() => setCreateOpen(true)}
-        >
+        <Button size="xs" className="gap-1" onClick={() => setCreateOpen(true)}>
           <Plus className="h-3 w-3" />
           Nuevo ticket
         </Button>
@@ -199,7 +195,10 @@ function RouteComponent() {
                             {task.title}
                           </p>
                           {task.priority && task.priority !== "no-priority" && (
-                            <Badge variant="outline" className="shrink-0 text-[10px]">
+                            <Badge
+                              variant="outline"
+                              className="shrink-0 text-[10px]"
+                            >
                               {PRIORITY_OPTIONS.find(
                                 (p) => p.value === task.priority,
                               )?.label ?? task.priority}
@@ -208,12 +207,14 @@ function RouteComponent() {
                         </div>
                         <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
                           {task.number != null && <span>#{task.number}</span>}
-                          {task.assigneeName && <span>{task.assigneeName}</span>}
+                          {task.assigneeName && (
+                            <span>{task.assigneeName}</span>
+                          )}
                         </div>
                         <div className="mt-2 flex flex-col gap-1.5">
-                          <label className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                          <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
                             Etapa
-                          </label>
+                          </span>
                           <select
                             value={task.stage ?? ESJ_DEFAULT_TICKET_STAGE}
                             disabled={!canManage}
@@ -273,8 +274,14 @@ function RouteComponent() {
             </DialogHeader>
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs text-muted-foreground">Título</label>
+                <label
+                  htmlFor="esj-ticket-title"
+                  className="text-xs text-muted-foreground"
+                >
+                  Título
+                </label>
                 <Input
+                  id="esj-ticket-title"
                   autoFocus
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -285,8 +292,14 @@ function RouteComponent() {
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs text-muted-foreground">Etapa</label>
+                <label
+                  htmlFor="esj-ticket-stage"
+                  className="text-xs text-muted-foreground"
+                >
+                  Etapa
+                </label>
                 <select
+                  id="esj-ticket-stage"
                   value={stage}
                   onChange={(e) => setStage(e.target.value)}
                   className="h-9 rounded-md border border-input bg-background px-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -299,10 +312,14 @@ function RouteComponent() {
                 </select>
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs text-muted-foreground">
+                <label
+                  htmlFor="esj-ticket-priority"
+                  className="text-xs text-muted-foreground"
+                >
                   Prioridad
                 </label>
                 <select
+                  id="esj-ticket-priority"
                   value={priority}
                   onChange={(e) => setPriority(e.target.value)}
                   className="h-9 rounded-md border border-input bg-background px-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
