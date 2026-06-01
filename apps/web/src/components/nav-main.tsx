@@ -44,6 +44,14 @@ export function NavMain() {
       badge: null,
     },
     {
+      title: "Proyectos ESJ",
+      url: `/dashboard/workspace/${workspace.id}/esj`,
+      isActive: window.location.pathname.startsWith(
+        `/dashboard/workspace/${workspace.id}/esj`,
+      ),
+      badge: null,
+    },
+    {
       title: t("navigation:sidebar.invitations"),
       url: "/dashboard/invitations",
       isActive: window.location.pathname === "/dashboard/invitations",

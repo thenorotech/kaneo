@@ -24,6 +24,7 @@ import db, { getDatabase, schema } from "./database";
 import { prepareDatabaseStartup } from "./database/prepare-database-startup";
 import { waitForDatabase } from "./database/wait-for-database";
 import discordIntegration from "./discord-integration";
+import esj from "./esj";
 import { eventContext } from "./events";
 import externalLink from "./external-link";
 import genericWebhookIntegration from "./generic-webhook-integration";
@@ -534,6 +535,7 @@ export function createApp() {
   const workflowRuleApi = api.route("/workflow-rule", workflowRule);
   const invitationApi = api.route("/invitation", invitation);
   const workspaceApi = api.route("/workspace", workspace);
+  const esjApi = api.route("/esj", esj);
 
   app.route(
     "/",
@@ -606,6 +608,7 @@ export function createApp() {
     commentApi,
     configApi,
     discordIntegrationApi,
+    esjApi,
     externalLinkApi,
     genericWebhookIntegrationApi,
     githubIntegrationApi,
@@ -722,6 +725,7 @@ const {
   commentApi,
   configApi,
   discordIntegrationApi,
+  esjApi,
   externalLinkApi,
   genericWebhookIntegrationApi,
   githubIntegrationApi,
@@ -775,6 +779,7 @@ export type AppType =
   | typeof workflowRuleApi
   | typeof invitationApi
   | typeof workspaceApi
+  | typeof esjApi
   | typeof publicProjectApi
   | typeof invitationPublicApi
   | typeof oauthApi;

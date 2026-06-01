@@ -6,6 +6,13 @@ import {
   assetTable,
   columnTable,
   commentTable,
+  esjAreaTable,
+  esjPhaseTable,
+  esjPieceTable,
+  esjProjectTable,
+  esjRoleAssignmentTable,
+  esjSapIntakeTable,
+  esjTaskLinkTable,
   externalLinkTable,
   githubIntegrationTable,
   integrationTable,
@@ -108,6 +115,10 @@ export const projectTableRelations = relations(
     githubIntegration: many(githubIntegrationTable),
     integrations: many(integrationTable),
     notificationWorkspaceProjects: many(userNotificationWorkspaceProjectTable),
+    esjProject: one(esjProjectTable),
+    esjAreas: many(esjAreaTable),
+    esjPhases: many(esjPhaseTable),
+    esjPieces: many(esjPieceTable),
   }),
 );
 
@@ -156,6 +167,7 @@ export const taskTableRelations = relations(taskTable, ({ one, many }) => ({
   sourceRelations: many(taskRelationTable, { relationName: "sourceTask" }),
   targetRelations: many(taskRelationTable, { relationName: "targetTask" }),
   remindersSent: many(taskReminderSentTable),
+  esjLink: one(esjTaskLinkTable),
 }));
 
 export const timeEntryTableRelations = relations(timeEntryTable, ({ one }) => ({
@@ -392,3 +404,142 @@ export const commentTableRelations = relations(commentTable, ({ one }) => ({
     references: [userTable.id],
   }),
 }));
+
+export const esjProjectTableRelations = relations(
+  esjProjectTable,
+  ({ one, many }) => ({
+    project: one(projectTable, {
+      fields: [esjProjectTable.projectId],
+      references: [projectTable.id],
+    }),
+    workspace: one(workspaceTable, {
+      fields: [esjProjectTable.workspaceId],
+      references: [workspaceTable.id],
+    }),
+    areas: many(esjAreaTable),
+    phases: many(esjPhaseTable),
+    pieces: many(esjPieceTable),
+    taskLinks: many(esjTaskLinkTable),
+  }),
+);
+
+export const esjAreaTableRelations = relations(
+  esjAreaTable,
+  ({ one, many }) => ({
+    project: one(projectTable, {
+      fields: [esjAreaTable.projectId],
+      references: [projectTable.id],
+    }),
+    esjProject: one(esjProjectTable, {
+      fields: [esjAreaTable.esjProjectId],
+      references: [esjProjectTable.id],
+    }),
+    phases: many(esjPhaseTable),
+    pieces: many(esjPieceTable),
+  }),
+);
+
+export const esjPhaseTableRelations = relations(
+  esjPhaseTable,
+  ({ one, many }) => ({
+    project: one(projectTable, {
+      fields: [esjPhaseTable.projectId],
+      references: [projectTable.id],
+    }),
+    esjProject: one(esjProjectTable, {
+      fields: [esjPhaseTable.esjProjectId],
+      references: [esjProjectTable.id],
+    }),
+    area: one(esjAreaTable, {
+      fields: [esjPhaseTable.areaId],
+      references: [esjAreaTable.id],
+    }),
+    pieces: many(esjPieceTable),
+    taskLinks: many(esjTaskLinkTable),
+  }),
+);
+
+export const esjPieceTableRelations = relations(
+  esjPieceTable,
+  ({ one, many }) => ({
+    project: one(projectTable, {
+      fields: [esjPieceTable.projectId],
+      references: [projectTable.id],
+    }),
+    esjProject: one(esjProjectTable, {
+      fields: [esjPieceTable.esjProjectId],
+      references: [esjProjectTable.id],
+    }),
+    phase: one(esjPhaseTable, {
+      fields: [esjPieceTable.phaseId],
+      references: [esjPhaseTable.id],
+    }),
+    area: one(esjAreaTable, {
+      fields: [esjPieceTable.areaId],
+      references: [esjAreaTable.id],
+    }),
+    taskLinks: many(esjTaskLinkTable),
+  }),
+);
+
+export const esjTaskLinkTableRelations = relations(
+  esjTaskLinkTable,
+  ({ one }) => ({
+    task: one(taskTable, {
+      fields: [esjTaskLinkTable.taskId],
+      references: [taskTable.id],
+    }),
+    project: one(projectTable, {
+      fields: [esjTaskLinkTable.projectId],
+      references: [projectTable.id],
+    }),
+    esjProject: one(esjProjectTable, {
+      fields: [esjTaskLinkTable.esjProjectId],
+      references: [esjProjectTable.id],
+    }),
+    phase: one(esjPhaseTable, {
+      fields: [esjTaskLinkTable.phaseId],
+      references: [esjPhaseTable.id],
+    }),
+    area: one(esjAreaTable, {
+      fields: [esjTaskLinkTable.areaId],
+      references: [esjAreaTable.id],
+    }),
+    piece: one(esjPieceTable, {
+      fields: [esjTaskLinkTable.pieceId],
+      references: [esjPieceTable.id],
+    }),
+  }),
+);
+
+export const esjRoleAssignmentTableRelations = relations(
+  esjRoleAssignmentTable,
+  ({ one }) => ({
+    workspace: one(workspaceTable, {
+      fields: [esjRoleAssignmentTable.workspaceId],
+      references: [workspaceTable.id],
+    }),
+    user: one(userTable, {
+      fields: [esjRoleAssignmentTable.userId],
+      references: [userTable.id],
+    }),
+  }),
+);
+
+export const esjSapIntakeTableRelations = relations(
+  esjSapIntakeTable,
+  ({ one }) => ({
+    workspace: one(workspaceTable, {
+      fields: [esjSapIntakeTable.workspaceId],
+      references: [workspaceTable.id],
+    }),
+    project: one(projectTable, {
+      fields: [esjSapIntakeTable.projectId],
+      references: [projectTable.id],
+    }),
+    esjProject: one(esjProjectTable, {
+      fields: [esjSapIntakeTable.esjProjectId],
+      references: [esjProjectTable.id],
+    }),
+  }),
+);

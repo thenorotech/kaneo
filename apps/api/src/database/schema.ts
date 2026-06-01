@@ -6,6 +6,7 @@ import {
   index,
   integer,
   jsonb,
+  numeric,
   pgTable,
   text,
   timestamp,
@@ -914,6 +915,314 @@ export const deviceCodeTable = pgTable(
     uniqueIndex("device_code_device_code_uidx").on(table.deviceCode),
     uniqueIndex("device_code_user_code_uidx").on(table.userCode),
     index("device_code_user_id_idx").on(table.userId),
+  ],
+);
+
+// =====================================================================
+// ESJ — Acero estructural (medición de tiempos para cotización)
+// Jerarquía de negocio: project → esj_area → esj_phase → esj_piece.
+// Las tablas son satélite del core de kaneo para no alterar su modelo.
+// =====================================================================
+
+export const esjProjectTable = pgTable(
+  "esj_project",
+  {
+    id: text("id")
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .unique()
+      .references(() => projectTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    workspaceId: text("workspace_id")
+      .notNull()
+      .references(() => workspaceTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    sapCode: text("sap_code").notNull().unique(),
+    name: text("name").notNull(),
+    clientName: text("client_name").notNull(),
+    requester: text("requester"),
+    requiredDate: timestamp("required_date", { mode: "date" }),
+    priority: text("priority").notNull().default("medium"),
+    designType: text("design_type"),
+    designOrigin: text("design_origin").notNull().default("esj"),
+    totalTonnage: numeric("total_tonnage", { precision: 12, scale: 2 })
+      .notNull()
+      .default("0"),
+    connectionDate: timestamp("connection_date", { mode: "date" }),
+    submittalDate: timestamp("submittal_date", { mode: "date" }),
+    status: text("status").notNull().default("pendiente"),
+    source: text("source").notNull().default("sap-email"),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("esj_project_workspaceId_idx").on(table.workspaceId),
+    index("esj_project_status_idx").on(table.status),
+    index("esj_project_designType_idx").on(table.designType),
+  ],
+);
+
+export const esjAreaTable = pgTable(
+  "esj_area",
+  {
+    id: text("id")
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => projectTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    esjProjectId: text("esj_project_id")
+      .notNull()
+      .references(() => esjProjectTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    name: text("name").notNull(),
+    code: text("code"),
+    tonnage: numeric("tonnage", { precision: 12, scale: 2 })
+      .notNull()
+      .default("0"),
+    position: integer("position").notNull().default(0),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("esj_area_projectId_idx").on(table.projectId),
+    index("esj_area_esjProjectId_idx").on(table.esjProjectId),
+    unique("esj_area_esjProject_name_unique").on(table.esjProjectId, table.name),
+  ],
+);
+
+export const esjPhaseTable = pgTable(
+  "esj_phase",
+  {
+    id: text("id")
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => projectTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    esjProjectId: text("esj_project_id")
+      .notNull()
+      .references(() => esjProjectTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    areaId: text("area_id").references(() => esjAreaTable.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+    name: text("name").notNull(),
+    slug: text("slug").notNull(),
+    sequence: integer("sequence").notNull().default(0),
+    status: text("status").notNull().default("pending"),
+    dueDate: timestamp("due_date", { mode: "date" }),
+    startedAt: timestamp("started_at", { mode: "date" }),
+    completedAt: timestamp("completed_at", { mode: "date" }),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("esj_phase_projectId_idx").on(table.projectId),
+    index("esj_phase_esjProjectId_idx").on(table.esjProjectId),
+    index("esj_phase_areaId_idx").on(table.areaId),
+    index("esj_phase_status_idx").on(table.status),
+  ],
+);
+
+export const esjPieceTable = pgTable(
+  "esj_piece",
+  {
+    id: text("id")
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => projectTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    esjProjectId: text("esj_project_id")
+      .notNull()
+      .references(() => esjProjectTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    phaseId: text("phase_id").references(() => esjPhaseTable.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+    areaId: text("area_id").references(() => esjAreaTable.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+    code: text("code").notNull(),
+    description: text("description"),
+    pieceType: text("piece_type"),
+    quantity: integer("quantity").notNull().default(1),
+    weight: numeric("weight", { precision: 12, scale: 3 }),
+    status: text("status").notNull().default("pending"),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("esj_piece_projectId_idx").on(table.projectId),
+    index("esj_piece_esjProjectId_idx").on(table.esjProjectId),
+    index("esj_piece_phaseId_idx").on(table.phaseId),
+    index("esj_piece_areaId_idx").on(table.areaId),
+  ],
+);
+
+export const esjTaskLinkTable = pgTable(
+  "esj_task_link",
+  {
+    id: text("id")
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    taskId: text("task_id")
+      .notNull()
+      .unique()
+      .references(() => taskTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => projectTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    esjProjectId: text("esj_project_id")
+      .notNull()
+      .references(() => esjProjectTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    phaseId: text("phase_id").references(() => esjPhaseTable.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+    areaId: text("area_id").references(() => esjAreaTable.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+    pieceId: text("piece_id").references(() => esjPieceTable.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+    roleKey: text("role_key"),
+    activityNumber: integer("activity_number"),
+    stage: text("stage"),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("esj_task_link_esjProjectId_idx").on(table.esjProjectId),
+    index("esj_task_link_phaseId_idx").on(table.phaseId),
+    index("esj_task_link_areaId_idx").on(table.areaId),
+    index("esj_task_link_pieceId_idx").on(table.pieceId),
+    index("esj_task_link_roleKey_idx").on(table.roleKey),
+    index("esj_task_link_stage_idx").on(table.stage),
+  ],
+);
+
+export const esjRoleAssignmentTable = pgTable(
+  "esj_role_assignment",
+  {
+    id: text("id")
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    workspaceId: text("workspace_id")
+      .notNull()
+      .references(() => workspaceTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => userTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    roleKey: text("role_key").notNull(),
+    isActive: boolean("is_active").notNull().default(true),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("esj_role_assignment_workspaceId_idx").on(table.workspaceId),
+    index("esj_role_assignment_userId_idx").on(table.userId),
+    index("esj_role_assignment_roleKey_idx").on(table.roleKey),
+    unique("esj_role_assignment_workspace_user_role_unique").on(
+      table.workspaceId,
+      table.userId,
+      table.roleKey,
+    ),
+  ],
+);
+
+export const esjSapIntakeTable = pgTable(
+  "esj_sap_intake",
+  {
+    id: text("id")
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    sapCode: text("sap_code").notNull().unique(),
+    workspaceId: text("workspace_id").references(() => workspaceTable.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+    rawPayload: text("raw_payload").notNull(),
+    parsedData: jsonb("parsed_data"),
+    status: text("status").notNull().default("received"),
+    error: text("error"),
+    projectId: text("project_id").references(() => projectTable.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+    esjProjectId: text("esj_project_id").references(() => esjProjectTable.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("esj_sap_intake_workspaceId_idx").on(table.workspaceId),
+    index("esj_sap_intake_status_idx").on(table.status),
   ],
 );
 
